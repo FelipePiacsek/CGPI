@@ -3,6 +3,7 @@ package computacao_grafica.geometria.formas;
 import java.awt.Color;
 import java.awt.Graphics;
 
+import computacao_grafica.geometria.matematica.Ponto;
 import computacao_grafica.geometria.matematica.SegmentoDeReta;
 
 public class SegmentoDeReta2D {
@@ -10,6 +11,11 @@ public class SegmentoDeReta2D {
 	private SegmentoDeReta segmentoDeReta;
 	
 	private Graphics g;
+	
+	public SegmentoDeReta2D(Ponto a, Ponto b, Graphics g){
+		this.segmentoDeReta = new SegmentoDeReta(a, b);
+		this.g = g;
+	}
 	
 	public SegmentoDeReta2D(SegmentoDeReta s, Graphics g){
 		this.segmentoDeReta = s;
@@ -31,8 +37,8 @@ public class SegmentoDeReta2D {
 			this.segmentoDeReta.inverterPontos();
 		}
 		Ponto2D p;
-		for(int i = (int) this.segmentoDeReta.getA().getX(); i <= (int) this.segmentoDeReta.getB().getX(); i++){
-			p = new Ponto2D(i, (int) this.segmentoDeReta.getY(i), Color.RED);
+		for(double i = this.segmentoDeReta.getA().getX(); i <= this.segmentoDeReta.getB().getX(); i+=0.05){
+			p = new Ponto2D((int)i, (int) this.segmentoDeReta.getY(i), Color.RED);
 			p.desenharPonto(this.g);
 		}
 		

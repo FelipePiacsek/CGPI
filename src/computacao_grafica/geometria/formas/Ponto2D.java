@@ -56,9 +56,9 @@ public class Ponto2D extends Ponto {
    
    public void desenharPonto(Graphics g){
        g.setColor(_cor);
-       g.fillOval((int)getX() -(this.larg/2), (int)getY() - (this.larg/2), this.larg, this.larg);
+       g.fillOval((int)getX() -1, (int)getY() -1, 3, 3);// mais visivel (r = 3 pixels)
        
        g.setColor(_corStr);
-       g.drawString(_str, (int)getX() + larg, (int)getY());
+       g.drawString(_str, (int)getX() + 5, (int)getY());
    }
 }
