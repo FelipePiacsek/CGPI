@@ -14,6 +14,11 @@ public class Circunferencia {
 		this.centro = centro;
 	}
 	
+	public Circunferencia(Ponto centro, Ponto extremo){
+		this.raio = centro.calcularDistancia(extremo);
+		this.centro = centro;
+	}
+	
 	public double getRaio(){
 		return this.raio;
 	}

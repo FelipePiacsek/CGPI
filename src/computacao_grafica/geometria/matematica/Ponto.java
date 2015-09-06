@@ -4,12 +4,12 @@ public class Ponto {
 	private double x;
 	private double y;
 
-	protected Ponto () {
+	public Ponto () {
 		this.x = 0;
 		this.y = 0;
 	}
 
-	protected Ponto (double x, double y) {
+	public Ponto (double x, double y) {
 		this.x = x;
 		this.y = y;
 	}
@@ -36,10 +36,11 @@ public class Ponto {
 	}
 
     public double calcularDistancia(Ponto p) {
-
-		return Math.sqrt(Math.pow((p.getY() - getY()),2) +
+    	if(p !=null){
+    		return Math.sqrt(Math.pow((p.getY() - getY()),2) +
 					     Math.pow((p.getX() - getX()),2));
-
+    	}
+    	return 0.0;
 	}
 
 
