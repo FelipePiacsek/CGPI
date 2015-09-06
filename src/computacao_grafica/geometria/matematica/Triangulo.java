@@ -7,6 +7,12 @@ public class Triangulo {
 	private SegmentoDeReta arestaB;
 	
 	private SegmentoDeReta arestaC;
+	
+	private Ponto pontoA;
+	
+	private Ponto pontoB;
+	
+	private Ponto pontoC;
 
 	private boolean isTriangulo(Ponto a, Ponto b, Ponto c){
 		double[][] m = new double[3][2];
@@ -29,6 +35,9 @@ public class Triangulo {
 		if (!isTriangulo(a, b, c)){
 			throw new RuntimeException("Os pontos informados não formam um triângulo.");
 		}
+		this.pontoA = a;
+		this.pontoB = b;
+		this.pontoC = c;
 		this.arestaA = new SegmentoDeReta(a, b);
 		this.arestaB = new SegmentoDeReta(a, c);
 		this.arestaC = new SegmentoDeReta(b, c);
@@ -44,6 +53,18 @@ public class Triangulo {
 
 	public SegmentoDeReta getArestaC() {
 		return arestaC;
+	}
+
+	public Ponto getPontoA() {
+		return pontoA;
+	}
+
+	public Ponto getPontoB() {
+		return pontoB;
+	}
+
+	public Ponto getPontoC() {
+		return pontoC;
 	}
 	
 }

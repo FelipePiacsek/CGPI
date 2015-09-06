@@ -1,14 +1,16 @@
 package computacao_grafica.geometria.formas;
 
 import static java.awt.Color.RED;
+import static java.util.Collections.unmodifiableSet;
 
 import java.awt.Graphics;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import computacao_grafica.geometria.matematica.Circunferencia;
 import computacao_grafica.geometria.matematica.Ponto;
 import computacao_grafica.geometria.matematica.Retangulo;
-import computacao_grafica.geometria.matematica.SegmentoDeReta;
 
 public class Circunferencia2D implements Forma2D{
 
@@ -17,6 +19,8 @@ public class Circunferencia2D implements Forma2D{
 	private Circunferencia circunferencia;
 	
 	private Graphics g;
+	
+	private Set<Ponto2D> pontos;
 	
 	public Circunferencia2D(Circunferencia c, Graphics g){
 		this.circunferencia = c;
@@ -30,26 +34,29 @@ public class Circunferencia2D implements Forma2D{
 	
 	private void desenharCircunferencia(){
 		Ponto2D p;
+		this.pontos = new HashSet<Ponto2D>();
 		for(double i = 0.0; i <= 360.0; i+=0.5){
 			p = new Ponto2D(circunferencia.getPontoDaCircunferencia(i), RED, this.g);
+			pontos.add(p);
 			p.desenhar();
 		}
 	}
 	
+	@Override
 	public void desenhar(){
 		this.desenharCircunferencia();
 	}
 
 	@Override
 	public Set<Ponto> getPontos() {
-		// TODO Auto-generated method stub
-		return null;
+		return unmodifiableSet(pontos);
 	}
 
 	@Override
 	public Retangulo getRetanguloQueCircunscreve() {
-		// TODO Auto-generated method stub
-		return null;
+		Ponto a = new Ponto(circunferencia.getCentro().getX() - circunferencia.getRaio() - 1, circunferencia.getCentro().getY() - circunferencia.getRaio() - 1);
+		Ponto b = new Ponto(circunferencia.getCentro().getX() + circunferencia.getRaio() + 1, circunferencia.getCentro().getY() + circunferencia.getRaio() + 1);
+		return new Retangulo(a, b);
 	}
 
 	

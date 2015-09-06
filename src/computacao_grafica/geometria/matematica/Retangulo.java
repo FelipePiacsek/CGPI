@@ -18,6 +18,10 @@ public class Retangulo {
 	
 	private Ponto pontoD;
 	
+	private double altura;
+	
+	private double largura;
+	
 	public Retangulo (Ponto a, Ponto b){
 		Ponto c = new Ponto(a.getX(), b.getY());
 		Ponto d = new Ponto(b.getX(), a.getY());
@@ -29,6 +33,8 @@ public class Retangulo {
 		this.arestaB = new SegmentoDeReta(a, d);
 		this.arestaC = new SegmentoDeReta(d, b);
 		this.arestaD = new SegmentoDeReta(c, b);
+		this.altura = a.calcularDistancia(c);
+		this.largura = a.calcularDistancia(d);
 	}
 	
 	public Ponto getPontoA() {
@@ -61,5 +67,13 @@ public class Retangulo {
 
 	public SegmentoDeReta getArestaD() {
 		return arestaD;
+	}
+
+	public double getAltura() {
+		return altura;
+	}
+	
+	public double getLargura() {
+		return largura;
 	}
 }

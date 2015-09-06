@@ -1,7 +1,9 @@
 package computacao_grafica.geometria.formas;
 import static computacao_grafica.geometria.main.MainFrame.LIMITE_MINIMO_HORIZONTAL;
+import static java.util.Collections.singleton;
 
 import java.awt.*;
+import java.util.Collections;
 import java.util.Set;
 
 import computacao_grafica.geometria.main.MainFrame;
@@ -86,13 +88,13 @@ public class Ponto2D extends Ponto implements Forma2D{
 
 	@Override
 	public Set<Ponto> getPontos() {
-		// TODO Auto-generated method stub
-		return null;
+		return singleton(this);
 	}
 
 	@Override
 	public Retangulo getRetanguloQueCircunscreve() {
-		// TODO Auto-generated method stub
-		return null;
+		Ponto a = new Ponto(getX() - 1, getY() - 1);
+		Ponto b = new Ponto(getX() + 1, getY() + 1);
+		return new Retangulo(a,b);
 	}
 }
