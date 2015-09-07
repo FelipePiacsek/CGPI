@@ -20,31 +20,37 @@ public class SegmentoDeReta2D implements Forma2D{
 	
 	private Graphics g;
 	
-	private Set<Ponto> pontos;
+	private Set<Ponto2D> pontos;
 	
 	public SegmentoDeReta2D(Ponto a, Ponto b, Graphics g){
 		this.segmentoDeReta = new SegmentoDeReta(a, b);
 		this.g = g;
-		this.pontos = new HashSet<Ponto>();
+		this.pontos = new HashSet<Ponto2D>();
+		criarPontos();
 	}
 	
+
 	public SegmentoDeReta2D(SegmentoDeReta s, Graphics g){
 		this.segmentoDeReta = s;
 		this.g = g;
-		this.pontos = new HashSet<Ponto>();
+		this.pontos = new HashSet<Ponto2D>();
+		criarPontos();
 	}
 	
+	private void criarPontos() {
+		definirEstrategia();
+		
+	}
 	
-	//Método que define a estratégia de desenho da reta a ser utilizada.
 	private void definirEstrategia() {
 		if(this.segmentoDeReta.getA().getX() == this.segmentoDeReta.getB().getX()){
-			desenharSemEquacaoDaReta();
+			semEquacaoDaRetaStrategy();
 		}else{
-			desenharEquacaoReta();
+			equacaoRetaStrategy();
 		}
 	}
 	
-	private void desenharEquacaoReta(){
+	private void equacaoRetaStrategy(){
 		if(this.segmentoDeReta.getA().getX() > this.segmentoDeReta.getB().getX()){
 			this.segmentoDeReta.inverterPontos();
 		}
@@ -52,12 +58,11 @@ public class SegmentoDeReta2D implements Forma2D{
 		for(double i = this.segmentoDeReta.getA().getX(); i <= this.segmentoDeReta.getB().getX(); i+=0.05){
 			p = new Ponto2D((int)i, (int) this.segmentoDeReta.getY(i), Color.RED, this.g);
 			pontos.add(p);
-			p.desenhar();
 		}
 		
 	}
 	
-	private void desenharSemEquacaoDaReta(){
+	private void semEquacaoDaRetaStrategy(){
 		if(this.segmentoDeReta.getA().getY() > this.segmentoDeReta.getB().getY()){
 			this.segmentoDeReta.inverterPontos();
 		}
@@ -65,13 +70,14 @@ public class SegmentoDeReta2D implements Forma2D{
 		for(int i = (int) this.segmentoDeReta.getA().getY(); i <= (int) this.segmentoDeReta.getB().getY(); i++){
 			p = new Ponto2D((int) this.segmentoDeReta.getA().getX(), i, Color.RED, this.g);
 			pontos.add(p);
-			p.desenhar();
 		}
 		
 	}
 	
 	private void desenharSegmentoReta(){
-		definirEstrategia();
+		for (Ponto2D ponto : pontos) {
+			ponto.desenhar();
+		}
 	}
 
 	@Override

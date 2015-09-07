@@ -12,8 +12,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.Line2D;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -25,6 +23,7 @@ import computacao_grafica.geometria.formas.Retangulo2D;
 import computacao_grafica.geometria.formas.SegmentoDeReta2D;
 import computacao_grafica.geometria.formas.Triangulo2D;
 import computacao_grafica.geometria.matematica.Ponto;
+import computacao_grafica.geometria.matematica.Retangulo;
 
 public class MainFrame extends JFrame implements MouseMotionListener, MouseListener, ActionListener{
 
@@ -49,12 +48,12 @@ public class MainFrame extends JFrame implements MouseMotionListener, MouseListe
 	private Ponto2D pontoA, pontoB;
 
 	private Forma2D elastico;
+	
+	private Retangulo cleaner;
 
 	private ModoDeDesenho modoAtual = ModoDeDesenho.RETA;
 	
-	private List<Forma2D> formas = new ArrayList<Forma2D>();
-	
-	private Ponto[][] pontos = new Ponto[1000][600];
+	private Ponto2D[][] pontos = new Ponto2D[1000][600];
 	
 	public static void main(String[] args) {
 		/**
@@ -99,14 +98,21 @@ public class MainFrame extends JFrame implements MouseMotionListener, MouseListe
 	}
 
 	public void paint(Graphics g) {
-		Graphics2D g2 = (Graphics2D) getGraphics();
-	    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-	        RenderingHints.VALUE_ANTIALIAS_ON);
-	    g2.draw(new Line2D.Double(200, 0, 200, getHeight()));
-	    g2.setPaint(Color.gray);
-		g.clearRect(201, 0, getWidth(), getHeight());
-		for (Forma2D forma : formas) {
-			forma.desenhar();
+		if(cleaner != null){
+			g.clearRect((int)cleaner.getPontoA().getX(), (int)cleaner.getPontoA().getY(), (int)cleaner.getLargura(), (int)cleaner.getAltura());
+			Graphics2D g2 = (Graphics2D) getGraphics();
+		    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+		        RenderingHints.VALUE_ANTIALIAS_ON);
+		    g2.draw(new Line2D.Double(200, 0, 200, getHeight()));
+		    g2.setPaint(Color.gray);
+		    int i, j;
+		    for(i=(int)cleaner.getPontoA().getX(); i<(int)cleaner.getPontoB().getX();i++){
+		    	for(j = (int)cleaner.getPontoA().getY(); j < (int)cleaner.getPontoB().getY(); j++){
+		    		if(pontos[i][j] != null){
+		    			pontos[i][j].desenhar();
+		    		}
+		    	}
+		    }
 		}
 		if (elastico != null){
 			elastico.desenhar();
@@ -136,28 +142,24 @@ public class MainFrame extends JFrame implements MouseMotionListener, MouseListe
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		elastico = getElastico();
-		setPontosLimpeza();
+		cleaner = elastico.getRetanguloQueCircunscreve();
 		salvarPontos(elastico);
-		formas.add(elastico);
 		elastico = null;
 		pontoA = pontoB = null;
 		repaint();
 	}
 
-	private void setPontosLimpeza() {
-		
-	}
-
 	private void salvarPontos(Forma2D elastico) {
-//		for(Ponto p : elastico.getPontos()){
-//			pontos[(int)p.getX()][(int)p.getY()] = p;
-//		}
+		for(Ponto p : elastico.getPontos()){
+			pontos[(int)p.getX()][(int)p.getY()] = (Ponto2D) p;
+		}
 	}
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		pontoB = new Ponto2D(e.getX(), e.getY(), RED, getGraphics());
 		elastico = getElastico();
+		cleaner = elastico.getRetanguloQueCircunscreve();
 		repaint();
 	}
 

@@ -4,7 +4,6 @@ import static java.awt.Color.RED;
 import static java.util.Collections.unmodifiableSet;
 
 import java.awt.Graphics;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
