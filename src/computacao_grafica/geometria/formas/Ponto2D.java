@@ -1,14 +1,10 @@
 package computacao_grafica.geometria.formas;
 import static computacao_grafica.geometria.main.MainFrame.LIMITE_MINIMO_HORIZONTAL;
-import static java.util.Collections.singleton;
 
-import java.awt.*;
-import java.util.Collections;
-import java.util.Set;
+import java.awt.Color;
+import java.awt.Graphics;
 
-import computacao_grafica.geometria.main.MainFrame;
 import computacao_grafica.geometria.matematica.Ponto;
-import computacao_grafica.geometria.matematica.Retangulo;
 public class Ponto2D extends Ponto implements Forma2D{
    
    private Color _cor;
@@ -84,17 +80,5 @@ public class Ponto2D extends Ponto implements Forma2D{
 	@Override
 	public void desenhar() {
 		this.desenharPonto();
-	}
-
-	@Override
-	public Set<Ponto> getPontos() {
-		return singleton(this);
-	}
-
-	@Override
-	public Retangulo getRetanguloQueCircunscreve() {
-		Ponto a = new Ponto(getX() - 1, getY() - 1);
-		Ponto b = new Ponto(getX() + 1, getY() + 1);
-		return new Retangulo(a,b);
 	}
 }

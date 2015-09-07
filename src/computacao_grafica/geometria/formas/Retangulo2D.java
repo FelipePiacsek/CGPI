@@ -1,8 +1,6 @@
 package computacao_grafica.geometria.formas;
 
 import java.awt.Graphics;
-import java.util.HashSet;
-import java.util.Set;
 
 import computacao_grafica.geometria.matematica.Ponto;
 import computacao_grafica.geometria.matematica.Retangulo;
@@ -53,24 +51,5 @@ public class Retangulo2D implements Forma2D{
 	public void desenhar() {
 		this.desenharRetangulo();
 	}
-
-
-	@Override
-	public Set<Ponto> getPontos() {
-		Set<Ponto> pontos = new HashSet<Ponto>();
-		pontos.addAll(arestaA.getPontos());
-		pontos.addAll(arestaB.getPontos());
-		pontos.addAll(arestaC.getPontos());
-		pontos.addAll(arestaD.getPontos());
-		return pontos;
-	}
-
-
-	@Override
-	public Retangulo getRetanguloQueCircunscreve() {
-		return this.retangulo;
-	}
-
-	
 
 }

@@ -136,22 +136,10 @@ public class MainFrame extends JFrame implements MouseMotionListener, MouseListe
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		elastico = getElastico();
-		setPontosLimpeza();
-		salvarPontos(elastico);
 		formas.add(elastico);
 		elastico = null;
 		pontoA = pontoB = null;
 		repaint();
-	}
-
-	private void setPontosLimpeza() {
-		
-	}
-
-	private void salvarPontos(Forma2D elastico) {
-//		for(Ponto p : elastico.getPontos()){
-//			pontos[(int)p.getX()][(int)p.getY()] = p;
-//		}
 	}
 
 	@Override
