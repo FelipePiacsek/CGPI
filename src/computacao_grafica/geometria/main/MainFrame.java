@@ -54,16 +54,9 @@ public class MainFrame extends JFrame implements MouseMotionListener, MouseListe
 	
 	private List<Forma2D> formas = new ArrayList<Forma2D>();
 	
-	private Ponto[][] pontos = new Ponto[1000][600];
-	
 	public static void main(String[] args) {
-		/**
-		 * Definicoes de janela
-		 */
 		MainFrame p = new MainFrame();
 		p.setVisible(true);
-
-		
 	}
 	
 	public MainFrame() {
