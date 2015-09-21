@@ -4,7 +4,6 @@ import static computacao_grafica.geometria.main.ParametrosConfiguracao.LIMITE_MI
 import static computacao_grafica.geometria.matematica.Ponto.ModoCoordenada.ABSOLUTA_JANELA;
 import static java.awt.Color.RED;
 import static java.awt.Color.WHITE;
-
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -18,10 +17,8 @@ import java.awt.geom.Line2D;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
-
 import computacao_grafica.geometria.arte.EdwardScissorHands;
 import computacao_grafica.geometria.arte.PaulSignac;
 import computacao_grafica.geometria.formas.Circunferencia2D;
@@ -42,7 +39,6 @@ public class MainFrame extends JFrame implements MouseMotionListener, MouseListe
      */
     private static final long serialVersionUID = 1L;
 
-
     private JButton botaoModoReta = new JButton("Reta");
 
     private JButton botaoModoCircunferencia = new JButton("Circunferência");
@@ -56,7 +52,9 @@ public class MainFrame extends JFrame implements MouseMotionListener, MouseListe
     private Ponto2D pontoA, pontoB;
 
     private Forma2D elastico;
-    
+
+    private Retangulo2D quadro;
+
     private ModoDeAcao modoAtual = ModoDeAcao.RETA;
 
     private List<Forma2D> formas = new ArrayList<Forma2D>();
@@ -66,9 +64,9 @@ public class MainFrame extends JFrame implements MouseMotionListener, MouseListe
     private PaulSignac paulSignac;
 
     private EdwardScissorHands johnnyDepp = new EdwardScissorHands();
-    
+
     private Set<Ponto2D> recorte;
-    
+
     public static void main(String[] args) {
         /**
          * Definicoes de janela
@@ -103,7 +101,7 @@ public class MainFrame extends JFrame implements MouseMotionListener, MouseListe
         botaoModoTriangulo.setLocation(20, 220);
         botaoModoTriangulo.addActionListener(this);
         getContentPane().add(botaoModoTriangulo);
-        
+
         botaoModoRecorte.setSize(150, 25);
         botaoModoRecorte.setLocation(20, 270);
         botaoModoRecorte.addActionListener(this);
@@ -116,12 +114,11 @@ public class MainFrame extends JFrame implements MouseMotionListener, MouseListe
         microVisor.setBounds(0, 400, LIMITE_MINIMO_HORIZONTAL - 25, LIMITE_MINIMO_HORIZONTAL - 25);
         microVisor.setVisible(true);
         getContentPane().add(microVisor);
-        
 
     }
 
     public void paint(Graphics g) {
-    	paulSignac = new PaulSignac(g);
+        paulSignac = new PaulSignac(g);
         Graphics2D g2 = (Graphics2D) getGraphics();
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2.draw(new Line2D.Double(LIMITE_MINIMO_HORIZONTAL, 0, LIMITE_MINIMO_HORIZONTAL, getHeight()));
@@ -129,17 +126,18 @@ public class MainFrame extends JFrame implements MouseMotionListener, MouseListe
         g2.setPaint(Color.gray);
         g.clearRect(LIMITE_MINIMO_HORIZONTAL + 1, 0, getWidth(), getHeight());
         for (Forma2D forma : formas) {
-        	paulSignac.desenharJanela(forma);
+            paulSignac.desenharJanela(forma);
         }
         if (elastico != null) {
-        	paulSignac.desenharJanela(elastico);
+            paulSignac.desenharJanela(elastico);
         }
-        if(this.modoAtual != ModoDeAcao.RECORTE){
-        	microVisor.atualizarVisor(formas, elastico);
+        if (this.modoAtual != ModoDeAcao.RECORTE) {
+            microVisor.atualizarVisor(formas, elastico);
         }
-        if(recorte != null){
-        	microVisor.atualizarVisor(recorte);
-        	recorte = null;
+        if (recorte != null) {
+            microVisor.atualizarVisor(recorte, (Retangulo2D) quadro);
+            recorte = null;
+            quadro = null;
         }
     }
 
@@ -160,33 +158,34 @@ public class MainFrame extends JFrame implements MouseMotionListener, MouseListe
 
     @Override
     public void mousePressed(MouseEvent e) {
-    	if(e.getX() > LIMITE_MINIMO_HORIZONTAL){
-    		pontoA = new Ponto2D(e.getX(), e.getY(), RED, ABSOLUTA_JANELA);
-    	}
+        if (e.getX() > LIMITE_MINIMO_HORIZONTAL) {
+            pontoA = new Ponto2D(e.getX(), e.getY(), RED, ABSOLUTA_JANELA);
+        }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-    	if(pontoA != null && pontoB != null){
-	        elastico = getElastico();
-	        if(this.modoAtual != ModoDeAcao.RECORTE){
-	        	formas.add(elastico);
-	        }else{
-	        	recorte = johnnyDepp.recortar(formas, (Retangulo2D) elastico);
-	        }
-	        elastico = null;
-	        repaint();
-	        pontoA = pontoB = null;
-    	}
+        if (pontoA != null && pontoB != null) {
+            elastico = getElastico();
+            if (this.modoAtual != ModoDeAcao.RECORTE) {
+                formas.add(elastico);
+            } else {
+                quadro = (Retangulo2D) elastico;
+                recorte = johnnyDepp.recortar(formas, quadro);
+            }
+            elastico = null;
+            repaint();
+            pontoA = pontoB = null;
+        }
     }
 
     @Override
     public void mouseDragged(MouseEvent e) {
-    	if(e.getX() > LIMITE_MINIMO_HORIZONTAL){
-	        pontoB = new Ponto2D(e.getX(), e.getY(), RED, ABSOLUTA_JANELA);
-	        elastico = getElastico();
-	        repaint();
-    	}
+        if (e.getX() > LIMITE_MINIMO_HORIZONTAL) {
+            pontoB = new Ponto2D(e.getX(), e.getY(), RED, ABSOLUTA_JANELA);
+            elastico = getElastico();
+            repaint();
+        }
     }
 
     private Forma2D getElastico() {
@@ -205,8 +204,8 @@ public class MainFrame extends JFrame implements MouseMotionListener, MouseListe
                 forma = new Triangulo2D(pontoA, pontoB);
                 break;
             case RECORTE:
-            	forma = new Retangulo2D(pontoA, pontoB);
-            	break;
+                forma = new Retangulo2D(pontoA, pontoB);
+                break;
             default:
                 forma = null;
                 break;
@@ -236,9 +235,9 @@ public class MainFrame extends JFrame implements MouseMotionListener, MouseListe
         if (e.getSource() == botaoModoTriangulo) {
             this.modoAtual = ModoDeAcao.TRIANGULO;
         }
-        
+
         if (e.getSource() == botaoModoRecorte) {
-        	this.modoAtual = ModoDeAcao.RECORTE;
+            this.modoAtual = ModoDeAcao.RECORTE;
         }
     }
 }
