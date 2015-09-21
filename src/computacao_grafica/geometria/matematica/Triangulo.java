@@ -33,7 +33,7 @@ public class Triangulo {
 	
 	public Triangulo (Ponto a, Ponto b, Ponto c){
 		if (!isTriangulo(a, b, c)){
-			throw new RuntimeException("Os pontos informados não formam um triângulo.");
+			System.out.println("Os pontos informados não formam um triângulo!");
 		}
 		this.pontoA = a;
 		this.pontoB = b;

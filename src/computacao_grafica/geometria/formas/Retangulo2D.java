@@ -1,11 +1,9 @@
 package computacao_grafica.geometria.formas;
 
-import java.awt.Graphics;
-
 import computacao_grafica.geometria.matematica.Ponto;
 import computacao_grafica.geometria.matematica.Retangulo;
 
-public class Retangulo2D implements Forma2D{
+public class Retangulo2D extends Forma2D{
 
 	private Retangulo retangulo;
 	
@@ -17,39 +15,42 @@ public class Retangulo2D implements Forma2D{
 	
 	private SegmentoDeReta2D arestaD;
 	
-	private Graphics g;
-	
-	public Retangulo2D(Retangulo r, Graphics g){
+	public Retangulo2D(Retangulo r){
 		this.retangulo = r;
-		this.g = g;
-		arestaA = new SegmentoDeReta2D(this.retangulo.getArestaA(), this.g);
-		arestaB = new SegmentoDeReta2D(this.retangulo.getArestaB(), this.g);
-		arestaC = new SegmentoDeReta2D(this.retangulo.getArestaC(), this.g);
-		arestaD = new SegmentoDeReta2D(this.retangulo.getArestaD(), this.g);
+		arestaA = new SegmentoDeReta2D(this.retangulo.getArestaA());
+		arestaB = new SegmentoDeReta2D(this.retangulo.getArestaB());
+		arestaC = new SegmentoDeReta2D(this.retangulo.getArestaC());
+		arestaD = new SegmentoDeReta2D(this.retangulo.getArestaD());
+		adicionarPontos();
 	}
 	
 	
-	public Retangulo2D(Ponto a, Ponto b, Graphics g){
+	public Retangulo2D(Ponto a, Ponto b){
 		this.retangulo = new Retangulo(a, b);
-		this.g = g;
-		arestaA = new SegmentoDeReta2D(this.retangulo.getArestaA(), this.g);
-		arestaB = new SegmentoDeReta2D(this.retangulo.getArestaB(), this.g);
-		arestaC = new SegmentoDeReta2D(this.retangulo.getArestaC(), this.g);
-		arestaD = new SegmentoDeReta2D(this.retangulo.getArestaD(), this.g);
+		arestaA = new SegmentoDeReta2D(this.retangulo.getArestaA());
+		arestaB = new SegmentoDeReta2D(this.retangulo.getArestaB());
+		arestaC = new SegmentoDeReta2D(this.retangulo.getArestaC());
+		arestaD = new SegmentoDeReta2D(this.retangulo.getArestaD());
+		adicionarPontos();
 	}
 	
-	
-	
-	private void desenharRetangulo(){
-		arestaA.desenhar();
-		arestaB.desenhar();
-		arestaC.desenhar();
-		arestaD.desenhar();
+	private void adicionarPontos() {
+		addAllPontos(arestaA.getPontos());
+		addAllPontos(arestaB.getPontos());
+		addAllPontos(arestaC.getPontos());
+		addAllPontos(arestaD.getPontos());
 	}
+	
+	public boolean contem(final Ponto2D ponto){
+		int x1 = (int)retangulo.getPontoA().getX();
+		int x2 = (int)retangulo.getPontoB().getX();
+		int y1 = (int)retangulo.getPontoA().getY();
+		int y2 = (int)retangulo.getPontoB().getY();
+		
+		int pX = (int) ponto.getX();
+		int pY = (int) ponto.getY();
 
-	@Override
-	public void desenhar() {
-		this.desenharRetangulo();
+		return pX >= x1 && pX <= x2 && pY >= y1 && pY <= y2;
 	}
-
+	
 }

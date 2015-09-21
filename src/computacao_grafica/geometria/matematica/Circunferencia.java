@@ -28,6 +28,6 @@ public class Circunferencia {
 	}
 	
 	public Ponto getPontoDaCircunferencia(double angulo){
-		return new Ponto(centro.getX() + cos(angulo)*this.raio, centro.getY() + sin(angulo)*this.raio);
+		return new Ponto(centro.getX() + cos(angulo)*this.raio, centro.getY() + sin(angulo)*this.raio, centro.getModoCoordenada());
 	}
 }
