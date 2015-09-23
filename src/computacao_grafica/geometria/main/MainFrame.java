@@ -201,12 +201,14 @@ public class MainFrame extends JFrame implements MouseMotionListener, MouseListe
         }
         if (isRightMouseButton(e)) {
             if (this.modoAtual == ModoDeAcao.POLIGONO) {
-                if (poligono.getSegmentos().size() < 2) {
-                    JOptionPane.showMessageDialog(null, "Crie pelo menos dois segmentos do polígono antes de fechá-lo.");
-                } else {
-                    SegmentoDeReta2D segmento = new SegmentoDeReta2D(inicioPoligono, previousPontoPoligono);
-                    poligono.addSegmento(segmento);
-                    finalizarPoligono();
+                if (poligono != null) {
+                    if (poligono.getSegmentos().size() < 2) {
+                        JOptionPane.showMessageDialog(null, "Crie pelo menos dois segmentos do polígono antes de fechá-lo.");
+                    } else {
+                        SegmentoDeReta2D segmento = new SegmentoDeReta2D(inicioPoligono, previousPontoPoligono);
+                        poligono.addSegmento(segmento);
+                        finalizarPoligono();
+                    }
                 }
             }
         }
