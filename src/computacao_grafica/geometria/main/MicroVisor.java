@@ -6,6 +6,7 @@ import java.util.Set;
 import javax.swing.JPanel;
 import computacao_grafica.geometria.arte.GeorgeSeurat;
 import computacao_grafica.geometria.formas.Forma2D;
+import computacao_grafica.geometria.formas.Poligono2D;
 import computacao_grafica.geometria.formas.Ponto2D;
 import computacao_grafica.geometria.formas.Retangulo2D;
 
@@ -26,6 +27,8 @@ public class MicroVisor extends JPanel {
 
     private Retangulo2D quadro;
 
+    private Poligono2D poligono;
+
     @Override
     protected void paintComponent(Graphics g) {
         georgeSeurat = new GeorgeSeurat(g);
@@ -40,7 +43,11 @@ public class MicroVisor extends JPanel {
             if (elastico != null) {
                 georgeSeurat.desenharPreview(elastico);
             }
+            if (poligono != null) {
+                georgeSeurat.desenharPreview(poligono);
+            }
             elastico = null;
+            poligono = null;
         }
     }
 
@@ -48,12 +55,20 @@ public class MicroVisor extends JPanel {
         this.formas = formas;
         this.elastico = elastico;
         this.recorte = null;
+        this.poligono = null;
+        repaint();
+    }
+
+    public void atualizarVisor(final Poligono2D poligono) {
+        this.poligono = poligono;
+        this.recorte = null;
         repaint();
     }
 
     public void atualizarVisor(Set<Ponto2D> recorte, final Retangulo2D quadro) {
         this.recorte = recorte;
         this.quadro = quadro;
+        this.poligono = null;
         repaint();
     }
 }

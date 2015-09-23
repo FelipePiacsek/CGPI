@@ -4,6 +4,8 @@ import static computacao_grafica.geometria.main.ParametrosConfiguracao.LIMITE_MI
 import static computacao_grafica.geometria.matematica.Ponto.ModoCoordenada.ABSOLUTA_JANELA;
 import static java.awt.Color.RED;
 import static java.awt.Color.WHITE;
+import static javax.swing.SwingUtilities.isLeftMouseButton;
+import static javax.swing.SwingUtilities.isRightMouseButton;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -19,10 +21,12 @@ import java.util.List;
 import java.util.Set;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import computacao_grafica.geometria.arte.EdwardScissorHands;
 import computacao_grafica.geometria.arte.PaulSignac;
 import computacao_grafica.geometria.formas.Circunferencia2D;
 import computacao_grafica.geometria.formas.Forma2D;
+import computacao_grafica.geometria.formas.Poligono2D;
 import computacao_grafica.geometria.formas.Ponto2D;
 import computacao_grafica.geometria.formas.Retangulo2D;
 import computacao_grafica.geometria.formas.SegmentoDeReta2D;
@@ -31,7 +35,7 @@ import computacao_grafica.geometria.formas.Triangulo2D;
 public class MainFrame extends JFrame implements MouseMotionListener, MouseListener, ActionListener {
 
     private enum ModoDeAcao {
-        RETA, CIRCUNFERENCIA, RETANGULO, TRIANGULO, RECORTE;
+        RETA, CIRCUNFERENCIA, RETANGULO, TRIANGULO, RECORTE, POLIGONO, LINHA_POLIGONAL;
     }
 
     /**
@@ -49,11 +53,17 @@ public class MainFrame extends JFrame implements MouseMotionListener, MouseListe
 
     private JButton botaoModoRecorte = new JButton("Recorte");
 
-    private Ponto2D pontoA, pontoB;
+    private JButton botaoModoPoligono = new JButton("Polígono");
+
+    private JButton botaoModoLinhaPoligonal = new JButton("Linha Poligonal");
+
+    private Ponto2D pontoA, pontoB, inicioPoligono, previousPontoPoligono, nextPontoPoligono;
 
     private Forma2D elastico;
 
     private Retangulo2D quadro;
+
+    private Poligono2D poligono;
 
     private ModoDeAcao modoAtual = ModoDeAcao.RETA;
 
@@ -83,29 +93,39 @@ public class MainFrame extends JFrame implements MouseMotionListener, MouseListe
         getContentPane().setLayout(null);
 
         botaoModoReta.setSize(150, 25);
-        botaoModoReta.setLocation(20, 70);
+        botaoModoReta.setLocation(20, 40);
         botaoModoReta.addActionListener(this);
         getContentPane().add(botaoModoReta);
 
         botaoModoCircunferencia.setSize(150, 25);
-        botaoModoCircunferencia.setLocation(20, 120);
+        botaoModoCircunferencia.setLocation(20, 90);
         botaoModoCircunferencia.addActionListener(this);
         getContentPane().add(botaoModoCircunferencia);
 
         botaoModoRetangulo.setSize(150, 25);
-        botaoModoRetangulo.setLocation(20, 170);
+        botaoModoRetangulo.setLocation(20, 140);
         botaoModoRetangulo.addActionListener(this);
         getContentPane().add(botaoModoRetangulo);
 
         botaoModoTriangulo.setSize(150, 25);
-        botaoModoTriangulo.setLocation(20, 220);
+        botaoModoTriangulo.setLocation(20, 190);
         botaoModoTriangulo.addActionListener(this);
         getContentPane().add(botaoModoTriangulo);
 
         botaoModoRecorte.setSize(150, 25);
-        botaoModoRecorte.setLocation(20, 270);
+        botaoModoRecorte.setLocation(20, 240);
         botaoModoRecorte.addActionListener(this);
         getContentPane().add(botaoModoRecorte);
+
+        botaoModoPoligono.setSize(150, 25);
+        botaoModoPoligono.setLocation(20, 290);
+        botaoModoPoligono.addActionListener(this);
+        getContentPane().add(botaoModoPoligono);
+
+        botaoModoLinhaPoligonal.setSize(150, 25);
+        botaoModoLinhaPoligonal.setLocation(20, 340);
+        botaoModoLinhaPoligonal.addActionListener(this);
+        getContentPane().add(botaoModoLinhaPoligonal);
 
         addMouseListener(this);
         addMouseMotionListener(this);
@@ -139,6 +159,10 @@ public class MainFrame extends JFrame implements MouseMotionListener, MouseListe
             recorte = null;
             quadro = null;
         }
+        if (poligono != null) {
+            paulSignac.desenharJanela(poligono);
+            microVisor.atualizarVisor(poligono);
+        }
     }
 
     @Override
@@ -158,14 +182,46 @@ public class MainFrame extends JFrame implements MouseMotionListener, MouseListe
 
     @Override
     public void mousePressed(MouseEvent e) {
-        if (e.getX() > LIMITE_MINIMO_HORIZONTAL) {
-            pontoA = new Ponto2D(e.getX(), e.getY(), RED, ABSOLUTA_JANELA);
+        if (isLeftMouseButton(e)) {
+            if (this.modoAtual == ModoDeAcao.POLIGONO || this.modoAtual == ModoDeAcao.LINHA_POLIGONAL) {
+                if (poligono == null) {
+                    poligono = new Poligono2D();
+                    inicioPoligono = new Ponto2D(e.getX(), e.getY(), RED, ABSOLUTA_JANELA);
+                    previousPontoPoligono = new Ponto2D(inicioPoligono, inicioPoligono.get_cor(), inicioPoligono.getModoCoordenada());
+                } else {
+                    nextPontoPoligono = new Ponto2D(e.getX(), e.getY(), RED, ABSOLUTA_JANELA);
+                    SegmentoDeReta2D segmento = new SegmentoDeReta2D(previousPontoPoligono, nextPontoPoligono);
+                    poligono.addSegmento(segmento);
+                    previousPontoPoligono = new Ponto2D(nextPontoPoligono, nextPontoPoligono.get_cor(), nextPontoPoligono.getModoCoordenada());
+                    repaint();
+                }
+            } else if (e.getX() > LIMITE_MINIMO_HORIZONTAL) {
+                pontoA = new Ponto2D(e.getX(), e.getY(), RED, ABSOLUTA_JANELA);
+            }
         }
+        if (isRightMouseButton(e)) {
+            if (this.modoAtual == ModoDeAcao.POLIGONO) {
+                if (poligono.getSegmentos().size() < 2) {
+                    JOptionPane.showMessageDialog(null, "Crie pelo menos dois segmentos do polígono antes de fechá-lo.");
+                } else {
+                    SegmentoDeReta2D segmento = new SegmentoDeReta2D(inicioPoligono, previousPontoPoligono);
+                    poligono.addSegmento(segmento);
+                    finalizarPoligono();
+                }
+            }
+        }
+    }
+
+    private void finalizarPoligono() {
+        formas.add(poligono);
+        poligono = null;
+        inicioPoligono = previousPontoPoligono = nextPontoPoligono = null;
+        repaint();
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        if (pontoA != null && pontoB != null) {
+        if (this.modoAtual != ModoDeAcao.POLIGONO && this.modoAtual != ModoDeAcao.LINHA_POLIGONAL && pontoA != null && pontoB != null) {
             elastico = getElastico();
             if (this.modoAtual != ModoDeAcao.RECORTE) {
                 formas.add(elastico);
@@ -181,7 +237,7 @@ public class MainFrame extends JFrame implements MouseMotionListener, MouseListe
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        if (e.getX() > LIMITE_MINIMO_HORIZONTAL) {
+        if (this.modoAtual != ModoDeAcao.POLIGONO && this.modoAtual != ModoDeAcao.LINHA_POLIGONAL && e.getX() > LIMITE_MINIMO_HORIZONTAL) {
             pontoB = new Ponto2D(e.getX(), e.getY(), RED, ABSOLUTA_JANELA);
             elastico = getElastico();
             repaint();
@@ -220,6 +276,17 @@ public class MainFrame extends JFrame implements MouseMotionListener, MouseListe
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        if (this.modoAtual == ModoDeAcao.POLIGONO && inicioPoligono != null) {
+            JOptionPane.showMessageDialog(null, "Finalize o poligono que está sendo desenhado apertando o botão direito.");
+        } else {
+            if (this.modoAtual == ModoDeAcao.LINHA_POLIGONAL) {
+                finalizarPoligono();
+            }
+            mudarModoDeAcao(e);
+        }
+    }
+
+    private void mudarModoDeAcao(ActionEvent e) {
         if (e.getSource() == botaoModoCircunferencia) {
             this.modoAtual = ModoDeAcao.CIRCUNFERENCIA;
         }
@@ -239,5 +306,14 @@ public class MainFrame extends JFrame implements MouseMotionListener, MouseListe
         if (e.getSource() == botaoModoRecorte) {
             this.modoAtual = ModoDeAcao.RECORTE;
         }
+
+        if (e.getSource() == botaoModoPoligono) {
+            this.modoAtual = ModoDeAcao.POLIGONO;
+        }
+
+        if (e.getSource() == botaoModoLinhaPoligonal) {
+            this.modoAtual = ModoDeAcao.LINHA_POLIGONAL;
+        }
     }
+
 }
