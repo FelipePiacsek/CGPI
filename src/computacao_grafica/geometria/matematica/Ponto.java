@@ -7,7 +7,7 @@ import static computacao_grafica.geometria.main.ParametrosConfiguracao.WINDOW_WI
 import static computacao_grafica.geometria.matematica.Ponto.ModoCoordenada.ABSOLUTA_JANELA;
 import static computacao_grafica.geometria.matematica.Ponto.ModoCoordenada.NORMALIZADA;
 
-public class Ponto {
+public class Ponto implements FormaMatematica {
 
     private static final String name = "Ponto";
 
@@ -120,6 +120,11 @@ public class Ponto {
         this.x = ((this.x - retangulo.getPontoA().getX()) / largura);
         this.y = ((this.y - retangulo.getPontoA().getY()) / altura);
         this.modoCoordenada = NORMALIZADA;
+    }
+
+    @Override
+    public boolean contem(Ponto ponto) {
+        return (int) ponto.getX() == (int) this.x && (int) ponto.getY() == (int) this.y;
     }
 
 }

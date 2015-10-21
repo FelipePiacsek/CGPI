@@ -6,7 +6,6 @@ import static java.awt.Color.RED;
 import static java.awt.Color.WHITE;
 import static javax.swing.SwingUtilities.isLeftMouseButton;
 import static javax.swing.SwingUtilities.isRightMouseButton;
-
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -20,11 +19,9 @@ import java.awt.geom.Line2D;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-
 import computacao_grafica.geometria.action.Borracha;
 import computacao_grafica.geometria.arte.EdwardScissorHands;
 import computacao_grafica.geometria.arte.PaulSignac;
@@ -34,311 +31,298 @@ import computacao_grafica.geometria.formas.Poligono2D;
 import computacao_grafica.geometria.formas.Ponto2D;
 import computacao_grafica.geometria.formas.Retangulo2D;
 import computacao_grafica.geometria.formas.SegmentoDeReta2D;
-import computacao_grafica.geometria.formas.Triangulo2D;
+import computacao_grafica.geometria.matematica.SegmentoDeReta;
 
 public class MainFrame extends JFrame implements MouseMotionListener, MouseListener, ActionListener {
 
-	private enum ModoDeAcao {
-		RETA, CIRCUNFERENCIA, RETANGULO, TRIANGULO, RECORTE, POLIGONO, LINHA_POLIGONAL, APAGAR;
-	}
+    private enum ModoDeAcao {
+        RETA, CIRCUNFERENCIA, RETANGULO, RECORTE, POLIGONO, LINHA_POLIGONAL, APAGAR;
+    }
 
-	/**
-	 * Unique ID.
-	 */
-	private static final long serialVersionUID = 1L;
+    /**
+     * Unique ID.
+     */
+    private static final long serialVersionUID = 1L;
 
-	private JButton botaoModoReta = new JButton("Reta");
+    private JButton botaoModoReta = new JButton("Reta");
 
-	private JButton botaoModoCircunferencia = new JButton("Circunferência");
+    private JButton botaoModoCircunferencia = new JButton("Circunferência");
 
-	private JButton botaoModoRetangulo = new JButton("Retângulo");
+    private JButton botaoModoRetangulo = new JButton("Retângulo");
 
-	private JButton botaoModoRecorte = new JButton("Recorte");
+    private JButton botaoModoRecorte = new JButton("Recorte");
 
-	private JButton botaoModoPoligono = new JButton("Polígono");
+    private JButton botaoModoPoligono = new JButton("Polígono");
 
-	private JButton botaoModoLinhaPoligonal = new JButton("Linha Poligonal");
+    private JButton botaoModoLinhaPoligonal = new JButton("Linha Poligonal");
 
-	private JButton botaoApagarPrimitivo = new JButton("Apagar");
+    private JButton botaoApagarPrimitivo = new JButton("Apagar");
 
-	private Ponto2D pontoA, pontoB, inicioPoligono, previousPontoPoligono, nextPontoPoligono;
+    private Ponto2D pontoA, pontoB, inicioPoligono, previousPontoPoligono, nextPontoPoligono;
 
-	private Forma2D elastico;
+    private Forma2D elastico;
 
-	private Retangulo2D quadro;
+    private Retangulo2D quadro;
 
-	private Poligono2D poligono;
+    private Poligono2D poligono2D;
 
-	private ModoDeAcao modoAtual = ModoDeAcao.RETA;
+    private ModoDeAcao modoAtual = ModoDeAcao.RETA;
 
-	private List<Forma2D> formas = new ArrayList<Forma2D>();
+    private List<Forma2D> formas = new ArrayList<Forma2D>();
 
-	private MicroVisor microVisor = new MicroVisor();
+    private MicroVisor microVisor = new MicroVisor();
 
-	private PaulSignac paulSignac;
+    private PaulSignac paulSignac;
 
-	private EdwardScissorHands johnnyDepp = new EdwardScissorHands();
+    private EdwardScissorHands johnnyDepp = new EdwardScissorHands();
 
-	private Set<Ponto2D> recorte;
-	
-	public static void main(String[] args) {
-		/**
-		 * Definicoes de janela
-		 */
-		MainFrame p = new MainFrame();
-		p.setVisible(true);
-	}
+    private Set<Ponto2D> recorte;
 
-	public MainFrame() {
+    public static void main(String[] args) {
+        /**
+         * Definicoes de janela
+         */
+        MainFrame p = new MainFrame();
+        p.setVisible(true);
+    }
 
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setSize(1000, 600);
-		this.setResizable(false);
-		getContentPane().setLayout(null);
+    public MainFrame() {
 
-		botaoModoReta.setSize(150, 25);
-		botaoModoReta.setLocation(20, 40);
-		botaoModoReta.addActionListener(this);
-		getContentPane().add(botaoModoReta);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(1000, 600);
+        this.setResizable(false);
+        getContentPane().setLayout(null);
 
-		botaoModoCircunferencia.setSize(150, 25);
-		botaoModoCircunferencia.setLocation(20, 90);
-		botaoModoCircunferencia.addActionListener(this);
-		getContentPane().add(botaoModoCircunferencia);
+        botaoModoReta.setSize(150, 25);
+        botaoModoReta.setLocation(20, 40);
+        botaoModoReta.addActionListener(this);
+        getContentPane().add(botaoModoReta);
 
-		botaoModoRetangulo.setSize(150, 25);
-		botaoModoRetangulo.setLocation(20, 140);
-		botaoModoRetangulo.addActionListener(this);
-		getContentPane().add(botaoModoRetangulo);
+        botaoModoCircunferencia.setSize(150, 25);
+        botaoModoCircunferencia.setLocation(20, 90);
+        botaoModoCircunferencia.addActionListener(this);
+        getContentPane().add(botaoModoCircunferencia);
 
-		botaoApagarPrimitivo.setSize(150, 25);
-		botaoApagarPrimitivo.setLocation(20, 190);
-		botaoApagarPrimitivo.addActionListener(this);
-		getContentPane().add(botaoApagarPrimitivo);
+        botaoModoRetangulo.setSize(150, 25);
+        botaoModoRetangulo.setLocation(20, 140);
+        botaoModoRetangulo.addActionListener(this);
+        getContentPane().add(botaoModoRetangulo);
 
-		botaoModoRecorte.setSize(150, 25);
-		botaoModoRecorte.setLocation(20, 240);
-		botaoModoRecorte.addActionListener(this);
-		getContentPane().add(botaoModoRecorte);
+        botaoApagarPrimitivo.setSize(150, 25);
+        botaoApagarPrimitivo.setLocation(20, 190);
+        botaoApagarPrimitivo.addActionListener(this);
+        getContentPane().add(botaoApagarPrimitivo);
 
-		botaoModoPoligono.setSize(150, 25);
-		botaoModoPoligono.setLocation(20, 290);
-		botaoModoPoligono.addActionListener(this);
-		getContentPane().add(botaoModoPoligono);
+        botaoModoRecorte.setSize(150, 25);
+        botaoModoRecorte.setLocation(20, 240);
+        botaoModoRecorte.addActionListener(this);
+        getContentPane().add(botaoModoRecorte);
 
-		botaoModoLinhaPoligonal.setSize(150, 25);
-		botaoModoLinhaPoligonal.setLocation(20, 340);
-		botaoModoLinhaPoligonal.addActionListener(this);
-		getContentPane().add(botaoModoLinhaPoligonal);
+        botaoModoPoligono.setSize(150, 25);
+        botaoModoPoligono.setLocation(20, 290);
+        botaoModoPoligono.addActionListener(this);
+        getContentPane().add(botaoModoPoligono);
 
-		addMouseListener(this);
-		addMouseMotionListener(this);
-		setBackground(WHITE);
+        botaoModoLinhaPoligonal.setSize(150, 25);
+        botaoModoLinhaPoligonal.setLocation(20, 340);
+        botaoModoLinhaPoligonal.addActionListener(this);
+        getContentPane().add(botaoModoLinhaPoligonal);
 
-		microVisor.setBounds(0, 400, LIMITE_MINIMO_HORIZONTAL - 25, LIMITE_MINIMO_HORIZONTAL - 25);
-		microVisor.setVisible(true);
-		getContentPane().add(microVisor);
+        addMouseListener(this);
+        addMouseMotionListener(this);
+        setBackground(WHITE);
 
-	}
+        microVisor.setBounds(0, 400, LIMITE_MINIMO_HORIZONTAL - 25, LIMITE_MINIMO_HORIZONTAL - 25);
+        microVisor.setVisible(true);
+        getContentPane().add(microVisor);
 
-	@Override
-	public void paint(Graphics g) {
-		paulSignac = new PaulSignac(g);
-		Graphics2D g2 = (Graphics2D) getGraphics();
-		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		g2.draw(new Line2D.Double(LIMITE_MINIMO_HORIZONTAL, 0, LIMITE_MINIMO_HORIZONTAL, getHeight()));
-		g2.draw(new Line2D.Double(0, 400, LIMITE_MINIMO_HORIZONTAL, 400));
-		g2.setPaint(Color.gray);
-		g.clearRect(LIMITE_MINIMO_HORIZONTAL + 1, 0, getWidth(), getHeight());
-		for (Forma2D forma : formas) {
-			paulSignac.desenharJanela(forma);
-		}
-		if (elastico != null) {
-			paulSignac.desenharJanela(elastico);
-		}
-		if (this.modoAtual != ModoDeAcao.RECORTE) {
-			microVisor.atualizarVisor(formas, elastico);
-		}
-		if (recorte != null) {
-			microVisor.atualizarVisor(recorte, quadro);
-			recorte = null;
-			quadro = null;
-		}
-		if (poligono != null) {
-			paulSignac.desenharJanela(poligono);
-			microVisor.atualizarVisor(poligono);
-		}
-	}
+    }
 
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		if (this.modoAtual == ModoDeAcao.APAGAR) {
-			Ponto2D pontoClicado = new Ponto2D(e.getX(), e.getY(), RED, ABSOLUTA_JANELA);
-			Borracha borracha = new Borracha(pontoClicado);
-			Forma2D formaASerApagada = borracha.apagar(formas);
-			if (formaASerApagada != null) {
-				this.formas.remove(formaASerApagada);
-				repaint();
-			} 
-		}
-	}
+    @Override
+    public void paint(Graphics g) {
+        paulSignac = new PaulSignac(g);
+        Graphics2D g2 = (Graphics2D) getGraphics();
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.draw(new Line2D.Double(LIMITE_MINIMO_HORIZONTAL, 0, LIMITE_MINIMO_HORIZONTAL, getHeight()));
+        g2.draw(new Line2D.Double(0, 400, LIMITE_MINIMO_HORIZONTAL, 400));
+        g2.setPaint(Color.gray);
+        g.clearRect(LIMITE_MINIMO_HORIZONTAL + 1, 0, getWidth(), getHeight());
+        for (Forma2D forma : formas) {
+            paulSignac.desenharJanela(forma);
+        }
+        if (elastico != null) {
+            paulSignac.desenharJanela(elastico);
+        }
+        if (this.modoAtual != ModoDeAcao.RECORTE) {
+            microVisor.atualizarVisor(formas, elastico);
+        }
+        if (recorte != null) {
+            microVisor.atualizarVisor(recorte, quadro);
+            recorte = null;
+            quadro = null;
+        }
+        if (poligono2D != null) {
+            paulSignac.desenharJanela(poligono2D);
+            microVisor.atualizarVisor(poligono2D);
+        }
+    }
 
-	@Override
-	public void mouseEntered(MouseEvent e) {
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        if (this.modoAtual == ModoDeAcao.APAGAR) {
+            Ponto2D pontoClicado = new Ponto2D(e.getX(), e.getY(), RED, ABSOLUTA_JANELA);
+            Borracha borracha = new Borracha(pontoClicado);
+            Forma2D formaASerApagada = borracha.apagarMatematicaStrategy(formas);
+            if (formaASerApagada != null) {
+                this.formas.remove(formaASerApagada);
+                repaint();
+            }
+        }
+    }
 
-	}
+    @Override
+    public void mouseEntered(MouseEvent e) {
 
-	@Override
-	public void mouseExited(MouseEvent e) {
+    }
 
-	}
+    @Override
+    public void mouseExited(MouseEvent e) {
 
-	@Override
-	public void mousePressed(MouseEvent e) {
-		if (isLeftMouseButton(e)) {
-			if (this.modoAtual == ModoDeAcao.POLIGONO || this.modoAtual == ModoDeAcao.LINHA_POLIGONAL) {
-				if (poligono == null) {
-					poligono = new Poligono2D();
-					inicioPoligono = new Ponto2D(e.getX(), e.getY(), RED, ABSOLUTA_JANELA);
-					previousPontoPoligono = new Ponto2D(inicioPoligono, inicioPoligono.get_cor(),
-							inicioPoligono.getModoCoordenada());
-				} else {
-					nextPontoPoligono = new Ponto2D(e.getX(), e.getY(), RED, ABSOLUTA_JANELA);
-					SegmentoDeReta2D segmento = new SegmentoDeReta2D(previousPontoPoligono, nextPontoPoligono);
-					poligono.addSegmento(segmento);
-					previousPontoPoligono = new Ponto2D(nextPontoPoligono, nextPontoPoligono.get_cor(),
-							nextPontoPoligono.getModoCoordenada());
-					repaint();
-				}
-			} else if (e.getX() > LIMITE_MINIMO_HORIZONTAL && this.modoAtual != ModoDeAcao.APAGAR) {
-				pontoA = new Ponto2D(e.getX(), e.getY(), RED, ABSOLUTA_JANELA);
-			} 
-		}
-		if (isRightMouseButton(e)) {
-			if (this.modoAtual == ModoDeAcao.POLIGONO) {
-				if (poligono != null) {
-					if (poligono.getSegmentos().size() < 2) {
-						JOptionPane.showMessageDialog(null,
-								"Crie pelo menos dois segmentos do polígono antes de fechá-lo.");
-					} else {
-						SegmentoDeReta2D segmento = new SegmentoDeReta2D(inicioPoligono, previousPontoPoligono);
-						poligono.addSegmento(segmento);
-						finalizarPoligono();
-					}
-				}
-			}
-		}
-	}
+    }
 
-	private void finalizarPoligono() {
-		formas.add(poligono);
-		poligono = null;
-		inicioPoligono = previousPontoPoligono = nextPontoPoligono = null;
-		repaint();
-	}
+    @Override
+    public void mousePressed(MouseEvent e) {
+        if (isLeftMouseButton(e)) {
+            if (this.modoAtual == ModoDeAcao.POLIGONO || this.modoAtual == ModoDeAcao.LINHA_POLIGONAL) {
+                if (poligono2D == null) {
+                    poligono2D = new Poligono2D();
+                    inicioPoligono = new Ponto2D(e.getX(), e.getY(), RED, ABSOLUTA_JANELA);
+                    previousPontoPoligono = new Ponto2D(inicioPoligono, inicioPoligono.get_cor(), inicioPoligono.getModoCoordenada());
+                } else {
+                    nextPontoPoligono = new Ponto2D(e.getX(), e.getY(), RED, ABSOLUTA_JANELA);
+                    SegmentoDeReta segmento = new SegmentoDeReta(previousPontoPoligono, nextPontoPoligono);
+                    poligono2D.addSegmento(segmento);
+                    previousPontoPoligono = new Ponto2D(nextPontoPoligono, nextPontoPoligono.get_cor(), nextPontoPoligono.getModoCoordenada());
+                    repaint();
+                }
+            } else if (e.getX() > LIMITE_MINIMO_HORIZONTAL && this.modoAtual != ModoDeAcao.APAGAR) {
+                pontoA = new Ponto2D(e.getX(), e.getY(), RED, ABSOLUTA_JANELA);
+            }
+        }
+        if (isRightMouseButton(e)) {
+            if (this.modoAtual == ModoDeAcao.POLIGONO) {
+                if (poligono2D != null) {
+                    if (poligono2D.quantidadeSegmentos() < 2) {
+                        JOptionPane.showMessageDialog(null, "Crie pelo menos dois segmentos do polígono antes de fechá-lo.");
+                    } else {
+                        SegmentoDeReta segmento = new SegmentoDeReta(inicioPoligono, previousPontoPoligono);
+                        poligono2D.addSegmento(segmento);
+                        finalizarPoligono();
+                    }
+                }
+            }
+        }
+    }
 
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		if (this.modoAtual != ModoDeAcao.POLIGONO && this.modoAtual != ModoDeAcao.LINHA_POLIGONAL && pontoA != null
-				&& pontoB != null) {
-			elastico = getElastico();
-			if (this.modoAtual != ModoDeAcao.RECORTE) {
-				formas.add(elastico);
-			} else {
-				quadro = (Retangulo2D) elastico;
-				recorte = johnnyDepp.recortar(formas, quadro);
-			}
-			elastico = null;
-			repaint();
-			pontoA = pontoB = null;
-		}
-	}
+    private void finalizarPoligono() {
+        formas.add(poligono2D);
+        poligono2D = null;
+        inicioPoligono = previousPontoPoligono = nextPontoPoligono = null;
+        repaint();
+    }
 
-	@Override
-	public void mouseDragged(MouseEvent e) {
-		if (this.modoAtual != ModoDeAcao.POLIGONO && this.modoAtual != ModoDeAcao.LINHA_POLIGONAL
-				&& e.getX() > LIMITE_MINIMO_HORIZONTAL) {
-			pontoB = new Ponto2D(e.getX(), e.getY(), RED, ABSOLUTA_JANELA);
-			elastico = getElastico();
-			repaint();
-		}
-	}
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        if (this.modoAtual != ModoDeAcao.POLIGONO && this.modoAtual != ModoDeAcao.LINHA_POLIGONAL && pontoA != null && pontoB != null) {
+            elastico = getElastico();
+            if (this.modoAtual != ModoDeAcao.RECORTE) {
+                formas.add(elastico);
+            } else {
+                quadro = (Retangulo2D) elastico;
+                recorte = johnnyDepp.recortar(formas, quadro);
+            }
+            elastico = null;
+            repaint();
+            pontoA = pontoB = null;
+        }
+    }
 
-	private Forma2D getElastico() {
-		Forma2D forma;
-		switch (this.modoAtual) {
-		case CIRCUNFERENCIA:
-			forma = new Circunferencia2D(pontoA, pontoB);
-			break;
-		case RETA:
-			forma = new SegmentoDeReta2D(pontoA, pontoB);
-			break;
-		case RETANGULO:
-			forma = new Retangulo2D(pontoA, pontoB);
-			break;
-		case TRIANGULO:
-			forma = new Triangulo2D(pontoA, pontoB);
-			break;
-		case RECORTE:
-			forma = new Retangulo2D(pontoA, pontoB);
-			break;
-		default:
-			forma = null;
-			break;
-		}
-		return forma;
-	}
+    @Override
+    public void mouseDragged(MouseEvent e) {
+        if (this.modoAtual != ModoDeAcao.POLIGONO && this.modoAtual != ModoDeAcao.LINHA_POLIGONAL && e.getX() > LIMITE_MINIMO_HORIZONTAL) {
+            pontoB = new Ponto2D(e.getX(), e.getY(), RED, ABSOLUTA_JANELA);
+            elastico = getElastico();
+            repaint();
+        }
+    }
 
-	@Override
-	public void mouseMoved(MouseEvent e) {
+    private Forma2D getElastico() {
+        Forma2D forma;
+        switch (this.modoAtual) {
+            case CIRCUNFERENCIA:
+                forma = new Circunferencia2D(pontoA, pontoB);
+                break;
+            case RETA:
+                forma = new SegmentoDeReta2D(pontoA, pontoB);
+                break;
+            case RETANGULO:
+                forma = new Retangulo2D(pontoA, pontoB);
+                break;
+            case RECORTE:
+                forma = new Retangulo2D(pontoA, pontoB);
+                break;
+            default:
+                forma = null;
+                break;
+        }
+        return forma;
+    }
 
-	}
+    @Override
+    public void mouseMoved(MouseEvent e) {
 
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		if (this.modoAtual == ModoDeAcao.POLIGONO && inicioPoligono != null) {
-			JOptionPane.showMessageDialog(null,
-					"Finalize o poligono que está sendo desenhado apertando o botão direito.");
-		} else {
-			if (this.modoAtual == ModoDeAcao.LINHA_POLIGONAL) {
-				finalizarPoligono();
-			}
-			mudarModoDeAcao(e);
-		}
-	}
+    }
 
-	private void mudarModoDeAcao(ActionEvent e) {
-		if (e.getSource() == botaoModoCircunferencia) {
-			this.modoAtual = ModoDeAcao.CIRCUNFERENCIA;
-		}
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (this.modoAtual == ModoDeAcao.POLIGONO && inicioPoligono != null) {
+            JOptionPane.showMessageDialog(null, "Finalize o poligono que está sendo desenhado apertando o botão direito.");
+        } else {
+            if (this.modoAtual == ModoDeAcao.LINHA_POLIGONAL) {
+                finalizarPoligono();
+            }
+            mudarModoDeAcao(e);
+        }
+    }
 
-		if (e.getSource() == botaoModoReta) {
-			this.modoAtual = ModoDeAcao.RETA;
-		}
+    private void mudarModoDeAcao(ActionEvent e) {
+        if (e.getSource() == botaoModoCircunferencia) {
+            this.modoAtual = ModoDeAcao.CIRCUNFERENCIA;
+        }
 
-		if (e.getSource() == botaoModoRetangulo) {
-			this.modoAtual = ModoDeAcao.RETANGULO;
-		}
+        if (e.getSource() == botaoModoReta) {
+            this.modoAtual = ModoDeAcao.RETA;
+        }
 
-		if (e.getSource() == botaoApagarPrimitivo) {
-			this.modoAtual = ModoDeAcao.TRIANGULO;
-		}
+        if (e.getSource() == botaoModoRetangulo) {
+            this.modoAtual = ModoDeAcao.RETANGULO;
+        }
 
-		if (e.getSource() == botaoModoRecorte) {
-			this.modoAtual = ModoDeAcao.RECORTE;
-		}
+        if (e.getSource() == botaoModoRecorte) {
+            this.modoAtual = ModoDeAcao.RECORTE;
+        }
 
-		if (e.getSource() == botaoModoPoligono) {
-			this.modoAtual = ModoDeAcao.POLIGONO;
-		}
+        if (e.getSource() == botaoModoPoligono) {
+            this.modoAtual = ModoDeAcao.POLIGONO;
+        }
 
-		if (e.getSource() == botaoModoLinhaPoligonal) {
-			this.modoAtual = ModoDeAcao.LINHA_POLIGONAL;
-		}
+        if (e.getSource() == botaoModoLinhaPoligonal) {
+            this.modoAtual = ModoDeAcao.LINHA_POLIGONAL;
+        }
 
-		if (e.getSource() == botaoApagarPrimitivo) {
-			this.modoAtual = ModoDeAcao.APAGAR;
-		}
-	}
+        if (e.getSource() == botaoApagarPrimitivo) {
+            this.modoAtual = ModoDeAcao.APAGAR;
+        }
+    }
 
 }

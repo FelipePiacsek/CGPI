@@ -1,21 +1,25 @@
 package computacao_grafica.geometria.formas;
 
-import static java.util.Collections.unmodifiableSet;
-import java.util.HashSet;
-import java.util.Set;
+import computacao_grafica.geometria.matematica.FormaMatematica;
+import computacao_grafica.geometria.matematica.Poligono;
+import computacao_grafica.geometria.matematica.SegmentoDeReta;
 
 public class Poligono2D extends Forma2D {
 
-    private Set<SegmentoDeReta2D> segmentos = new HashSet<SegmentoDeReta2D>();
+    private Poligono poligono = new Poligono();
 
-    public Set<SegmentoDeReta2D> getSegmentos() {
-        return unmodifiableSet(segmentos);
-
+    public Integer quantidadeSegmentos() {
+        return poligono.getSegmentos().size();
     }
 
-    public void addSegmento(SegmentoDeReta2D segmento) {
-        segmentos.add(segmento);
-        super.addAllPontos(segmento.getPontos());
+    public void addSegmento(SegmentoDeReta segmento) {
+        poligono.addSegmento(segmento);
+        super.addAllPontos(new SegmentoDeReta2D(segmento).getPontos());
+    }
+
+    @Override
+    public FormaMatematica getFormaMatematica() {
+        return this.poligono;
     }
 
 }

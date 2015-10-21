@@ -1,5 +1,6 @@
 package computacao_grafica.geometria.formas;
 
+import computacao_grafica.geometria.matematica.FormaMatematica;
 import computacao_grafica.geometria.matematica.Ponto;
 import computacao_grafica.geometria.matematica.Retangulo;
 
@@ -53,6 +54,11 @@ public class Retangulo2D extends Forma2D {
     }
 
     public Retangulo getRetangulo() {
+        return this.retangulo;
+    }
+
+    @Override
+    public FormaMatematica getFormaMatematica() {
         return this.retangulo;
     }
 
