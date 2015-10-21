@@ -53,10 +53,6 @@ public class Retangulo2D extends Forma2D {
         return pX >= x1 && pX <= x2 && pY >= y1 && pY <= y2;
     }
 
-    public Retangulo getRetangulo() {
-        return this.retangulo;
-    }
-
     @Override
     public FormaMatematica getFormaMatematica() {
         return this.retangulo;

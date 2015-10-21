@@ -6,6 +6,7 @@ import java.util.Set;
 import computacao_grafica.geometria.formas.Forma2D;
 import computacao_grafica.geometria.formas.Ponto2D;
 import computacao_grafica.geometria.formas.Retangulo2D;
+import computacao_grafica.geometria.matematica.Retangulo;
 
 public class GeorgeSeurat extends Pontilhista {
 
@@ -26,7 +27,7 @@ public class GeorgeSeurat extends Pontilhista {
     public void desenharRecorte(Set<Ponto2D> recorte, Retangulo2D quadro) {
         for (Ponto2D p : recorte) {
             Ponto2D ponto = new Ponto2D(p, p.get_cor(), p.getModoCoordenada());
-            ponto.clip(quadro.getRetangulo());
+            ponto.clip((Retangulo) quadro.getFormaMatematica());
             ponto.setModoCoordenada(ABSOLUTA_PREVIEW);
             super.pontilhar(ponto, graphics);
         }
