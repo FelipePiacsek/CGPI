@@ -45,6 +45,24 @@ public class SegmentoDeReta implements FormaMatematica {
 
     @Override
     public boolean contem(Ponto ponto) {
-        return (int) this.getY(ponto.getX()) == (int) ponto.getY();
+        if (this.a.getX() == this.b.getX()) {
+            int inicio = 0;
+            int fim = 0;
+            if (this.a.getY() < this.b.getY()) {
+                inicio = (int) this.a.getY();
+                fim = (int) this.b.getY();
+            } else {
+                inicio = (int) this.b.getY();
+                fim = (int) this.a.getY();
+            }
+            for (int i = inicio; i < fim; i++) {
+                if (i == (int) ponto.getY() && (int) this.a.getX() == (int) ponto.getX()) {
+                    return true;
+                }
+            }
+            return false;
+        } else {
+            return (int) this.getY(ponto.getX()) == (int) ponto.getY();
+        }
     }
 }
