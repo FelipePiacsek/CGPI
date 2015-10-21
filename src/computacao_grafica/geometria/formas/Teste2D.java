@@ -5,23 +5,25 @@ import static java.awt.Color.RED;
 import computacao_grafica.geometria.matematica.Circunferencia;
 import computacao_grafica.geometria.matematica.Ponto;
 
-public class Circunferencia2D extends Forma2D{
+public class Teste2D extends Forma2D{
 
 	//TODO Fazer o algoritmo de espelhamento para otimizar a circunferência.
 
 	private Circunferencia circunferencia;
 	
-	public Circunferencia2D(Circunferencia c){
+	public Teste2D(Circunferencia c){
 		this.circunferencia = c;
 		definirPontosCircunferencia();
 	}
 	
-	public Circunferencia2D(double raio, Ponto centro){
-		this.circunferencia = new Circunferencia(raio, centro);
-		definirPontosCircunferencia();
+	public Teste2D(double raio, Ponto centro){
+		for(double d=0;d<4;d+=0.1){
+			this.circunferencia = new Circunferencia(d, centro);
+			definirPontosCircunferencia();
+		}
 	}
 	
-	public Circunferencia2D(Ponto a, Ponto b){
+	public Teste2D(Ponto a, Ponto b){
 		this.circunferencia = new Circunferencia(a, b);
 		definirPontosCircunferencia();
 	}
