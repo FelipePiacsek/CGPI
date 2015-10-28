@@ -3,7 +3,6 @@ package computacao_grafica.geometria.formas;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-
 import computacao_grafica.geometria.io.out.SaveElements;
 import computacao_grafica.geometria.matematica.FormaMatematica;
 
@@ -26,4 +25,11 @@ public abstract class Forma2D {
     public abstract FormaMatematica getFormaMatematica();
 
     public abstract SaveElements getSaveElements();
+
+    public void transladar(int deltaX, int deltaY) {
+        for (Ponto2D ponto : pontos) {
+            ponto.transladar(deltaX, deltaY);
+
+        }
+    }
 }

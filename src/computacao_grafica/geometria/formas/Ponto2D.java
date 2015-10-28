@@ -1,7 +1,6 @@
 package computacao_grafica.geometria.formas;
 
 import java.awt.Color;
-
 import computacao_grafica.geometria.matematica.Ponto;
 
 public class Ponto2D extends Ponto {
@@ -27,12 +26,12 @@ public class Ponto2D extends Ponto {
         setCorStr(Color.black);
         setStr("");
     }
-    
+
     public Ponto2D(double x, double y, Color cor, final Ponto.ModoCoordenada modoCoordenada) {
-    	super(x, y, modoCoordenada);
-    	setCor(cor);
-    	setCorStr(Color.black);
-    	setStr("");
+        super(x, y, modoCoordenada);
+        setCor(cor);
+        setCorStr(Color.black);
+        setStr("");
     }
 
     public Ponto2D(int x, int y, Color cor, String str, final Ponto.ModoCoordenada modoCoordenada) {
@@ -85,20 +84,21 @@ public class Ponto2D extends Ponto {
         this._corStr = _corStr;
     }
 
-    public void log(String... nome){
-    	StringBuilder sb = new StringBuilder();
-    	if(nome!= null && nome.length == 1){
-    		sb.append("Título: ");
-    		sb.append(nome[0]);
-    		sb.append("\nX: ");
-    	}else{
-    		sb.append("X: ");
-    	}
-    	sb.append(this.getX());
-    	sb.append("\nY: ");
-    	sb.append(this.getY());
-    	sb.append("\nModo coordenada: ");
-    	sb.append(this.getModoCoordenada());
-    	System.out.println(sb.toString());
+    public void log(String... nome) {
+        StringBuilder sb = new StringBuilder();
+        if (nome != null && nome.length == 1) {
+            sb.append("Título: ");
+            sb.append(nome[0]);
+            sb.append("\nX: ");
+        } else {
+            sb.append("X: ");
+        }
+        sb.append(this.getX());
+        sb.append("\nY: ");
+        sb.append(this.getY());
+        sb.append("\nModo coordenada: ");
+        sb.append(this.getModoCoordenada());
+        System.out.println(sb.toString());
     }
+
 }

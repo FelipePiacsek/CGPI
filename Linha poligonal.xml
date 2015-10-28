@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Figura>
+	<LinhaPoligonal>
+		<Ponto>
+			<x>0.565</x>
+			<y>0.53</y>
+		</Ponto>
+		<Ponto>
+			<x>0.768</x>
+			<y>0.34</y>
+		</Ponto>
+		<Ponto>
+			<x>0.59</x>
+			<y>0.20666666666666667</y>
+		</Ponto>
+		<Ponto>
+			<x>0.452</x>
+			<y>0.29</y>
+		</Ponto>
+		<Ponto>
+			<x>0.35</x>
+			<y>0.595</y>
+		</Ponto>
+		<Ponto>
+			<x>0.508</x>
+			<y>0.715</y>
+		</Ponto>
+		<Ponto>
+			<x>0.787</x>
+			<y>0.6683333333333333</y>
+		</Ponto>
+		<Ponto>
+			<x>0.787</x>
+			<y>0.6683333333333333</y>
+		</Ponto>
+		<Cor>
+			<R>255</R>
+			<G>0</G>
+			<B>0</B>
+		</Cor>
+	</LinhaPoligonal>
+</Figura>
