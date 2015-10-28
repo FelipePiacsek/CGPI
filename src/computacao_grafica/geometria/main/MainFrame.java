@@ -6,36 +6,44 @@ import static java.awt.Color.RED;
 import static java.awt.Color.WHITE;
 import static javax.swing.SwingUtilities.isLeftMouseButton;
 import static javax.swing.SwingUtilities.isRightMouseButton;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+
 import computacao_grafica.geometria.action.Borracha;
 import computacao_grafica.geometria.arte.EdwardScissorHands;
 import computacao_grafica.geometria.arte.PaulSignac;
 import computacao_grafica.geometria.formas.Circunferencia2D;
 import computacao_grafica.geometria.formas.Forma2D;
-import computacao_grafica.geometria.formas.Poligono2D;
+import computacao_grafica.geometria.formas.FormaPoligonal2D;
 import computacao_grafica.geometria.formas.Ponto2D;
 import computacao_grafica.geometria.formas.Retangulo2D;
 import computacao_grafica.geometria.formas.SegmentoDeReta2D;
+import computacao_grafica.geometria.io.in.Parser;
+import computacao_grafica.geometria.io.out.Saver;
 import computacao_grafica.geometria.matematica.SegmentoDeReta;
 
-public class MainFrame extends JFrame implements MouseMotionListener, MouseListener, ActionListener {
+public class MainFrame extends JFrame implements MouseMotionListener, MouseListener, ActionListener, KeyListener {
 
     private enum ModoDeAcao {
         RETA, CIRCUNFERENCIA, RETANGULO, RECORTE, POLIGONO, LINHA_POLIGONAL, APAGAR;
@@ -66,7 +74,7 @@ public class MainFrame extends JFrame implements MouseMotionListener, MouseListe
 
     private Retangulo2D quadro;
 
-    private Poligono2D poligono2D;
+    private FormaPoligonal2D poligono2D;
 
     private ModoDeAcao modoAtual = ModoDeAcao.RETA;
 
@@ -100,51 +108,61 @@ public class MainFrame extends JFrame implements MouseMotionListener, MouseListe
         botaoModoReta.setSize(150, 25);
         botaoModoReta.setLocation(20, 40);
         botaoModoReta.addActionListener(this);
+        botaoModoReta.addKeyListener(this);
         getContentPane().add(botaoModoReta);
         mapaAcoes.put(botaoModoReta, ModoDeAcao.RETA);
 
         botaoModoCircunferencia.setSize(150, 25);
         botaoModoCircunferencia.setLocation(20, 90);
         botaoModoCircunferencia.addActionListener(this);
+        botaoModoCircunferencia.addKeyListener(this);
         getContentPane().add(botaoModoCircunferencia);
         mapaAcoes.put(botaoModoCircunferencia, ModoDeAcao.CIRCUNFERENCIA);
 
         botaoModoRetangulo.setSize(150, 25);
         botaoModoRetangulo.setLocation(20, 140);
         botaoModoRetangulo.addActionListener(this);
+        botaoModoRetangulo.addKeyListener(this);
         getContentPane().add(botaoModoRetangulo);
         mapaAcoes.put(botaoModoRetangulo, ModoDeAcao.RETANGULO);
 
         botaoApagarPrimitivo.setSize(150, 25);
         botaoApagarPrimitivo.setLocation(20, 190);
         botaoApagarPrimitivo.addActionListener(this);
+        botaoApagarPrimitivo.addKeyListener(this);
         getContentPane().add(botaoApagarPrimitivo);
         mapaAcoes.put(botaoApagarPrimitivo, ModoDeAcao.APAGAR);
 
         botaoModoRecorte.setSize(150, 25);
         botaoModoRecorte.setLocation(20, 240);
         botaoModoRecorte.addActionListener(this);
+        botaoModoRecorte.addKeyListener(this);
         getContentPane().add(botaoModoRecorte);
         mapaAcoes.put(botaoModoRecorte, ModoDeAcao.RECORTE);
 
         botaoModoPoligono.setSize(150, 25);
         botaoModoPoligono.setLocation(20, 290);
         botaoModoPoligono.addActionListener(this);
+        botaoModoPoligono.addKeyListener(this);
         getContentPane().add(botaoModoPoligono);
         mapaAcoes.put(botaoModoPoligono, ModoDeAcao.POLIGONO);
 
         botaoModoLinhaPoligonal.setSize(150, 25);
         botaoModoLinhaPoligonal.setLocation(20, 340);
         botaoModoLinhaPoligonal.addActionListener(this);
+        botaoModoLinhaPoligonal.addKeyListener(this);
         getContentPane().add(botaoModoLinhaPoligonal);
         mapaAcoes.put(botaoModoLinhaPoligonal, ModoDeAcao.LINHA_POLIGONAL);
 
+        addKeyListener(this);
         addMouseListener(this);
         addMouseMotionListener(this);
+        getContentPane().addKeyListener(this);
         setBackground(WHITE);
 
         microVisor.setBounds(0, 400, LIMITE_MINIMO_HORIZONTAL - 25, LIMITE_MINIMO_HORIZONTAL - 25);
         microVisor.setVisible(true);
+        microVisor.addKeyListener(this);
         getContentPane().add(microVisor);
 
     }
@@ -206,7 +224,7 @@ public class MainFrame extends JFrame implements MouseMotionListener, MouseListe
         if (isLeftMouseButton(e) && e.getX() > LIMITE_MINIMO_HORIZONTAL) {
             if (this.modoAtual == ModoDeAcao.POLIGONO || this.modoAtual == ModoDeAcao.LINHA_POLIGONAL) {
                 if (poligono2D == null) {
-                    poligono2D = new Poligono2D();
+                    poligono2D = new FormaPoligonal2D();
                     inicioPoligono = new Ponto2D(e.getX(), e.getY(), RED, ABSOLUTA_JANELA);
                     previousPontoPoligono = new Ponto2D(inicioPoligono, inicioPoligono.get_cor(), inicioPoligono.getModoCoordenada());
                 } else {
@@ -228,6 +246,7 @@ public class MainFrame extends JFrame implements MouseMotionListener, MouseListe
                     } else {
                         SegmentoDeReta segmento = new SegmentoDeReta(inicioPoligono, previousPontoPoligono);
                         poligono2D.addSegmento(segmento);
+                        poligono2D.fechar();
                         finalizarPoligono();
                     }
                 }
@@ -313,5 +332,45 @@ public class MainFrame extends JFrame implements MouseMotionListener, MouseListe
             JOptionPane.showMessageDialog(null, "Ação não mapeada! Contacte o administrador!");
         }
     }
+
+    private Set<Integer> keys = new HashSet<Integer>();
+    
+	@Override
+	public void keyPressed(KeyEvent k) {
+		if(k.getKeyCode() == KeyEvent.VK_CONTROL){
+			keys.add(KeyEvent.VK_CONTROL);
+		}
+		if(k.getKeyCode() == KeyEvent.VK_S){
+			if(keys.contains(KeyEvent.VK_CONTROL)){
+				Saver vagnerLove = new Saver();
+				vagnerLove.salva(formas);
+			}
+		}
+		if(k.getKeyCode() == KeyEvent.VK_O){
+			if(keys.contains(KeyEvent.VK_CONTROL)){
+				Parser renatoAugusto = new Parser();
+				this.formas = renatoAugusto.ler("Teste1.xml");
+				repaint();
+			}
+		}
+		if(k.getKeyCode() == KeyEvent.VK_DELETE){
+			if(keys.contains(KeyEvent.VK_CONTROL)){
+				this.formas = new ArrayList<Forma2D>();
+				repaint();
+			}
+		}
+	}
+
+	@Override
+	public void keyReleased(KeyEvent k) {
+		if(k.getKeyCode() == KeyEvent.VK_CONTROL || k.getKeyCode() == KeyEvent.VK_S || k.getKeyCode() == KeyEvent.VK_O){
+			keys = new HashSet<Integer>();
+		}
+	}
+
+	@Override
+	public void keyTyped(KeyEvent k) {
+		
+	}
 
 }

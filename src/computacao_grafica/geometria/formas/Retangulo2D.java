@@ -1,7 +1,11 @@
 package computacao_grafica.geometria.formas;
 
+import java.awt.Color;
+
+import computacao_grafica.geometria.io.out.SaveElements;
 import computacao_grafica.geometria.matematica.FormaMatematica;
 import computacao_grafica.geometria.matematica.Ponto;
+import computacao_grafica.geometria.matematica.Ponto.ModoCoordenada;
 import computacao_grafica.geometria.matematica.Retangulo;
 
 public class Retangulo2D extends Forma2D {
@@ -16,6 +20,8 @@ public class Retangulo2D extends Forma2D {
 
     private SegmentoDeReta2D arestaD;
 
+    private SaveElements saveElements;
+    
     public Retangulo2D(Retangulo r) {
         this.retangulo = r;
         arestaA = new SegmentoDeReta2D(this.retangulo.getArestaA());
@@ -23,6 +29,7 @@ public class Retangulo2D extends Forma2D {
         arestaC = new SegmentoDeReta2D(this.retangulo.getArestaC());
         arestaD = new SegmentoDeReta2D(this.retangulo.getArestaD());
         adicionarPontos();
+        setSaveElements();
     }
 
     public Retangulo2D(Ponto a, Ponto b) {
@@ -32,6 +39,7 @@ public class Retangulo2D extends Forma2D {
         arestaC = new SegmentoDeReta2D(this.retangulo.getArestaC());
         arestaD = new SegmentoDeReta2D(this.retangulo.getArestaD());
         adicionarPontos();
+        setSaveElements();
     }
 
     private void adicionarPontos() {
@@ -58,4 +66,23 @@ public class Retangulo2D extends Forma2D {
         return this.retangulo;
     }
 
+    public Retangulo getRetangulo(){
+    	return this.retangulo;
+    }
+
+    private void setSaveElements(){
+    	this.saveElements = new SaveElements();
+    	this.saveElements.setCor(super.getPontos().stream().findFirst().get().get_cor());
+    	Ponto2D a = new Ponto2D(retangulo.getPontoA(), Color.RED, ModoCoordenada.ABSOLUTA_JANELA);
+    	Ponto2D b = new Ponto2D(retangulo.getPontoB(), Color.RED, ModoCoordenada.ABSOLUTA_JANELA);
+    	a.setModoCoordenada(ModoCoordenada.NORMALIZADA);
+    	b.setModoCoordenada(ModoCoordenada.NORMALIZADA);
+    	this.saveElements.addPonto(a);
+    	this.saveElements.addPonto(b);
+    	this.saveElements.setNome("Retangulo");
+    }
+	@Override
+	public SaveElements getSaveElements() {
+		return this.saveElements;
+	}
 }

@@ -27,6 +27,13 @@ public class Ponto2D extends Ponto {
         setCorStr(Color.black);
         setStr("");
     }
+    
+    public Ponto2D(double x, double y, Color cor, final Ponto.ModoCoordenada modoCoordenada) {
+    	super(x, y, modoCoordenada);
+    	setCor(cor);
+    	setCorStr(Color.black);
+    	setStr("");
+    }
 
     public Ponto2D(int x, int y, Color cor, String str, final Ponto.ModoCoordenada modoCoordenada) {
         super(x, y, modoCoordenada);

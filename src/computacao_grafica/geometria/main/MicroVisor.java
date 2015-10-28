@@ -6,7 +6,7 @@ import java.util.Set;
 import javax.swing.JPanel;
 import computacao_grafica.geometria.arte.GeorgeSeurat;
 import computacao_grafica.geometria.formas.Forma2D;
-import computacao_grafica.geometria.formas.Poligono2D;
+import computacao_grafica.geometria.formas.FormaPoligonal2D;
 import computacao_grafica.geometria.formas.Ponto2D;
 import computacao_grafica.geometria.formas.Retangulo2D;
 
@@ -27,7 +27,7 @@ public class MicroVisor extends JPanel {
 
     private Retangulo2D quadro;
 
-    private Poligono2D poligono;
+    private FormaPoligonal2D poligono;
 
     @Override
     protected void paintComponent(Graphics g) {
@@ -59,7 +59,7 @@ public class MicroVisor extends JPanel {
         repaint();
     }
 
-    public void atualizarVisor(final Poligono2D poligono) {
+    public void atualizarVisor(final FormaPoligonal2D poligono) {
         this.poligono = poligono;
         this.recorte = null;
         repaint();

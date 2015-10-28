@@ -27,7 +27,15 @@ public class Ponto implements FormaMatematica {
         this.modoCoordenada = modoCoordenada;
     }
 
-    public Ponto(final double x, final double y, final ModoCoordenada modoCoordenada) {
+    public Ponto(double x, double y, final ModoCoordenada modoCoordenada) {
+    	if(modoCoordenada.equals(ModoCoordenada.NORMALIZADA)){
+    		if(x < 0.22){
+    			x = 0.225;
+    		}
+    		if(y < 0.22){
+    			y = 0.225;
+    		}
+    	}
         this.x = x;
         this.y = y;
         this.modoCoordenada = modoCoordenada;
