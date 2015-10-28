@@ -1,7 +1,6 @@
 package computacao_grafica.geometria.formas;
 
 import java.awt.Color;
-
 import computacao_grafica.geometria.io.out.SaveElements;
 import computacao_grafica.geometria.matematica.FormaMatematica;
 import computacao_grafica.geometria.matematica.Ponto;
@@ -13,17 +12,20 @@ public class SegmentoDeReta2D extends Forma2D {
     private SegmentoDeReta segmentoDeReta;
 
     private SaveElements saveElements;
-    
+
     public SegmentoDeReta2D(Ponto a, Ponto b) {
         this.segmentoDeReta = new SegmentoDeReta(a, b);
+        init();
+    }
+
+    private void init() {
         definirEstrategia();
         setSaveElements();
     }
 
     public SegmentoDeReta2D(SegmentoDeReta s) {
         this.segmentoDeReta = s;
-        definirEstrategia();
-        setSaveElements();
+        init();
     }
 
     // Método que define a estratégia de desenho da reta a ser utilizada.
@@ -36,17 +38,17 @@ public class SegmentoDeReta2D extends Forma2D {
     }
 
     private void comEquacaoReta() {
-    	Ponto2D p;
+        Ponto2D p;
         if (this.segmentoDeReta.getA().getX() > this.segmentoDeReta.getB().getX()) {
             for (double i = this.segmentoDeReta.getB().getX(); i <= this.segmentoDeReta.getA().getX(); i += 0.05) {
-            	p = new Ponto2D((int) i, (int) this.segmentoDeReta.getY(i), Color.RED, ModoCoordenada.ABSOLUTA_JANELA);
-            	addPonto(p);
+                p = new Ponto2D((int) i, (int) this.segmentoDeReta.getY(i), Color.RED, ModoCoordenada.ABSOLUTA_JANELA);
+                addPonto(p);
             }
-        }else{
-        	for (double i = this.segmentoDeReta.getA().getX(); i <= this.segmentoDeReta.getB().getX(); i += 0.05) {
-        		p = new Ponto2D((int) i, (int) this.segmentoDeReta.getY(i), Color.RED, ModoCoordenada.ABSOLUTA_JANELA);
-        		addPonto(p);
-        	}
+        } else {
+            for (double i = this.segmentoDeReta.getA().getX(); i <= this.segmentoDeReta.getB().getX(); i += 0.05) {
+                p = new Ponto2D((int) i, (int) this.segmentoDeReta.getY(i), Color.RED, ModoCoordenada.ABSOLUTA_JANELA);
+                addPonto(p);
+            }
         }
 
     }
@@ -68,22 +70,28 @@ public class SegmentoDeReta2D extends Forma2D {
         return this.segmentoDeReta;
     }
 
-
-    private void setSaveElements(){
-    	this.saveElements = new SaveElements();
-    	this.saveElements.setCor(super.getPontos().stream().findFirst().get().get_cor());
-    	Ponto2D a = new Ponto2D(segmentoDeReta.getA(), Color.RED, ModoCoordenada.ABSOLUTA_JANELA);
-    	Ponto2D b = new Ponto2D(segmentoDeReta.getB(), Color.RED, ModoCoordenada.ABSOLUTA_JANELA);
-    	a.setModoCoordenada(ModoCoordenada.NORMALIZADA);
-    	b.setModoCoordenada(ModoCoordenada.NORMALIZADA);
-    	this.saveElements.addPonto(a);
-    	this.saveElements.addPonto(b);
-    	this.saveElements.setNome("Reta");
+    private void setSaveElements() {
+        this.saveElements = new SaveElements();
+        this.saveElements.setCor(super.getPontos().stream().findFirst().get().get_cor());
+        Ponto2D a = new Ponto2D(segmentoDeReta.getA(), Color.RED, ModoCoordenada.ABSOLUTA_JANELA);
+        Ponto2D b = new Ponto2D(segmentoDeReta.getB(), Color.RED, ModoCoordenada.ABSOLUTA_JANELA);
+        a.setModoCoordenada(ModoCoordenada.NORMALIZADA);
+        b.setModoCoordenada(ModoCoordenada.NORMALIZADA);
+        this.saveElements.addPonto(a);
+        this.saveElements.addPonto(b);
+        this.saveElements.setNome("Reta");
     }
-    
-	@Override
-	public SaveElements getSaveElements() {
-		return this.saveElements;
-	}
+
+    @Override
+    public SaveElements getSaveElements() {
+        return this.saveElements;
+    }
+
+    @Override
+    public void transladar(int deltaX, int deltaY) {
+        this.segmentoDeReta.transladar(deltaX, deltaY);
+        super.resetPontos();
+        init();
+    }
 
 }

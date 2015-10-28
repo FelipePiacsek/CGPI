@@ -26,10 +26,9 @@ public abstract class Forma2D {
 
     public abstract SaveElements getSaveElements();
 
-    public void transladar(int deltaX, int deltaY) {
-        for (Ponto2D ponto : pontos) {
-            ponto.transladar(deltaX, deltaY);
+    public abstract void transladar(int deltaX, int deltaY);
 
-        }
+    public void resetPontos() {
+        pontos = new HashSet<Ponto2D>();
     }
 }
