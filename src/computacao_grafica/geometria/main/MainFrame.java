@@ -29,7 +29,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import computacao_grafica.geometria.action.FiguraFinder;
-import computacao_grafica.geometria.action.LupaLegacy;
+import computacao_grafica.geometria.action.Lupa;
 import computacao_grafica.geometria.arte.EdwardScissorHands;
 import computacao_grafica.geometria.arte.PaulSignac;
 import computacao_grafica.geometria.formas.Circunferencia2D;
@@ -214,7 +214,7 @@ public class MainFrame extends JFrame implements MouseMotionListener, MouseListe
     public void mouseClicked(MouseEvent e) {
         if (this.modoAtual == ModoDeAcao.APAGAR && e.getX() > LIMITE_MINIMO_HORIZONTAL) {
             Ponto2D pontoClicado = new Ponto2D(e.getX(), e.getY(), RED, ABSOLUTA_JANELA);
-            FiguraFinder borracha = new LupaLegacy(pontoClicado);
+            FiguraFinder borracha = new Lupa(pontoClicado);
             Forma2D formaASerApagada = borracha.encontrar(formas);
             if (formaASerApagada != null) {
                 this.formas.remove(formaASerApagada);
@@ -254,7 +254,7 @@ public class MainFrame extends JFrame implements MouseMotionListener, MouseListe
                 Ponto2D pontoClicado = new Ponto2D(e.getX(), e.getY(), RED, ABSOLUTA_JANELA);
                 xInicial = e.getX();
                 yInicial = e.getY();
-                FiguraFinder lupa = new LupaLegacy(pontoClicado);
+                FiguraFinder lupa = new Lupa(pontoClicado);
                 this.figuraSelecionada = lupa.encontrar(formas);
             }
         }
