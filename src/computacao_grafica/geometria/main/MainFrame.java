@@ -46,7 +46,7 @@ import computacao_grafica.geometria.matematica.SegmentoDeReta;
 public class MainFrame extends JFrame implements MouseMotionListener, MouseListener, ActionListener, KeyListener {
 
     private enum ModoDeAcao {
-        RETA, CIRCUNFERENCIA, RETANGULO, RECORTE, POLIGONO, LINHA_POLIGONAL, APAGAR;
+        RETA, CIRCUNFERENCIA, RETANGULO, RECORTE, POLIGONO, LINHA_POLIGONAL, APAGAR, ROTACAO, ESCALA;
     }
 
     /**
@@ -67,6 +67,10 @@ public class MainFrame extends JFrame implements MouseMotionListener, MouseListe
     private JButton botaoModoLinhaPoligonal = new JButton("Linha Poligonal");
 
     private JButton botaoApagarPrimitivo = new JButton("Apagar");
+    
+    private JButton botaoEscala = new JButton("Escala");
+    
+    private JButton botaoRotacao = new JButton("Rotação");
 
     private Ponto2D pontoA, pontoB, inicioPoligono, previousPontoPoligono, nextPontoPoligono;
 
@@ -101,58 +105,72 @@ public class MainFrame extends JFrame implements MouseMotionListener, MouseListe
     public MainFrame() {
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(1000, 600);
+        setSize(1000, 700);
         this.setResizable(false);
         getContentPane().setLayout(null);
 
         botaoModoReta.setSize(150, 25);
-        botaoModoReta.setLocation(20, 40);
+        botaoModoReta.setLocation(20, 20);
         botaoModoReta.addActionListener(this);
         botaoModoReta.addKeyListener(this);
         getContentPane().add(botaoModoReta);
         mapaAcoes.put(botaoModoReta, ModoDeAcao.RETA);
 
         botaoModoCircunferencia.setSize(150, 25);
-        botaoModoCircunferencia.setLocation(20, 90);
+        botaoModoCircunferencia.setLocation(20, 50);
         botaoModoCircunferencia.addActionListener(this);
         botaoModoCircunferencia.addKeyListener(this);
         getContentPane().add(botaoModoCircunferencia);
         mapaAcoes.put(botaoModoCircunferencia, ModoDeAcao.CIRCUNFERENCIA);
 
         botaoModoRetangulo.setSize(150, 25);
-        botaoModoRetangulo.setLocation(20, 140);
+        botaoModoRetangulo.setLocation(20, 80);
         botaoModoRetangulo.addActionListener(this);
         botaoModoRetangulo.addKeyListener(this);
         getContentPane().add(botaoModoRetangulo);
         mapaAcoes.put(botaoModoRetangulo, ModoDeAcao.RETANGULO);
 
         botaoApagarPrimitivo.setSize(150, 25);
-        botaoApagarPrimitivo.setLocation(20, 190);
+        botaoApagarPrimitivo.setLocation(20, 110);
         botaoApagarPrimitivo.addActionListener(this);
         botaoApagarPrimitivo.addKeyListener(this);
         getContentPane().add(botaoApagarPrimitivo);
         mapaAcoes.put(botaoApagarPrimitivo, ModoDeAcao.APAGAR);
 
         botaoModoRecorte.setSize(150, 25);
-        botaoModoRecorte.setLocation(20, 240);
+        botaoModoRecorte.setLocation(20, 140);
         botaoModoRecorte.addActionListener(this);
         botaoModoRecorte.addKeyListener(this);
         getContentPane().add(botaoModoRecorte);
         mapaAcoes.put(botaoModoRecorte, ModoDeAcao.RECORTE);
 
         botaoModoPoligono.setSize(150, 25);
-        botaoModoPoligono.setLocation(20, 290);
+        botaoModoPoligono.setLocation(20, 170);
         botaoModoPoligono.addActionListener(this);
         botaoModoPoligono.addKeyListener(this);
         getContentPane().add(botaoModoPoligono);
         mapaAcoes.put(botaoModoPoligono, ModoDeAcao.POLIGONO);
 
         botaoModoLinhaPoligonal.setSize(150, 25);
-        botaoModoLinhaPoligonal.setLocation(20, 340);
+        botaoModoLinhaPoligonal.setLocation(20, 200);
         botaoModoLinhaPoligonal.addActionListener(this);
         botaoModoLinhaPoligonal.addKeyListener(this);
         getContentPane().add(botaoModoLinhaPoligonal);
         mapaAcoes.put(botaoModoLinhaPoligonal, ModoDeAcao.LINHA_POLIGONAL);
+        
+        botaoEscala.setSize(150, 25);
+        botaoEscala.setLocation(20, 230);
+        botaoEscala.addActionListener(this);
+        botaoEscala.addKeyListener(this);
+        getContentPane().add(botaoEscala);
+        mapaAcoes.put(botaoEscala, ModoDeAcao.ESCALA);
+        
+        botaoRotacao.setSize(150, 25);
+        botaoRotacao.setLocation(20, 260);
+        botaoRotacao.addActionListener(this);
+        botaoRotacao.addKeyListener(this);
+        getContentPane().add(botaoRotacao);
+        mapaAcoes.put(botaoRotacao, ModoDeAcao.ROTACAO);
 
         addKeyListener(this);
         addMouseListener(this);
@@ -160,7 +178,7 @@ public class MainFrame extends JFrame implements MouseMotionListener, MouseListe
         getContentPane().addKeyListener(this);
         setBackground(WHITE);
 
-        microVisor.setBounds(0, 400, LIMITE_MINIMO_HORIZONTAL - 25, LIMITE_MINIMO_HORIZONTAL - 25);
+        microVisor.setBounds(0, 425, LIMITE_MINIMO_HORIZONTAL - 25, LIMITE_MINIMO_HORIZONTAL);
         microVisor.setVisible(true);
         microVisor.addKeyListener(this);
         getContentPane().add(microVisor);
@@ -173,7 +191,7 @@ public class MainFrame extends JFrame implements MouseMotionListener, MouseListe
         Graphics2D g2 = (Graphics2D) getGraphics();
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2.draw(new Line2D.Double(LIMITE_MINIMO_HORIZONTAL, 0, LIMITE_MINIMO_HORIZONTAL, getHeight()));
-        g2.draw(new Line2D.Double(0, 400, LIMITE_MINIMO_HORIZONTAL, 400));
+        g2.draw(new Line2D.Double(0, 450, LIMITE_MINIMO_HORIZONTAL, 450));
         g2.setPaint(Color.gray);
         g.clearRect(LIMITE_MINIMO_HORIZONTAL + 1, 0, getWidth(), getHeight());
         for (Forma2D forma : formas) {
@@ -206,6 +224,8 @@ public class MainFrame extends JFrame implements MouseMotionListener, MouseListe
                 this.formas.remove(formaASerApagada);
                 repaint();
             }
+        } else if (this.modoAtual == ModoDeAcao.APAGAR && e.getX() > LIMITE_MINIMO_HORIZONTAL) {
+            Ponto2D pontoClicado = new Ponto2D(e.getX(), e.getY(), RED, ABSOLUTA_JANELA);
         }
     }
 
@@ -279,7 +299,7 @@ public class MainFrame extends JFrame implements MouseMotionListener, MouseListe
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        if (pontoA != null && this.modoAtual != ModoDeAcao.POLIGONO && this.modoAtual != ModoDeAcao.LINHA_POLIGONAL && e.getX() > LIMITE_MINIMO_HORIZONTAL) {
+        if (pontoA != null && this.modoAtual != ModoDeAcao.POLIGONO && this.modoAtual != ModoDeAcao.ESCALA && this.modoAtual != ModoDeAcao.ROTACAO && this.modoAtual != ModoDeAcao.LINHA_POLIGONAL && e.getX() > LIMITE_MINIMO_HORIZONTAL) {
             pontoB = new Ponto2D(e.getX(), e.getY(), RED, ABSOLUTA_JANELA);
             elastico = getElastico();
             repaint();
