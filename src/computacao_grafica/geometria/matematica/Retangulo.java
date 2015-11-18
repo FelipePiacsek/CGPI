@@ -112,9 +112,21 @@ public class Retangulo implements FormaMatematica {
         this.arestaB.transladar(deltaX, deltaY);
         this.arestaC.transladar(deltaX, deltaY);
         this.arestaD.transladar(deltaX, deltaY);
-        pontoA.transladar(deltaX, deltaY);
-        pontoB.transladar(deltaX, deltaY);
-        pontoC.transladar(deltaX, deltaY);
-        pontoD.transladar(deltaX, deltaY);
+        this.pontoA.transladar(deltaX, deltaY);
+        this.pontoB.transladar(deltaX, deltaY);
+        this.pontoC.transladar(deltaX, deltaY);
+        this.pontoD.transladar(deltaX, deltaY);
     }
+
+	@Override
+	public void escalar(float fator) {
+		SegmentoDeReta rAB = new SegmentoDeReta(pontoA, pontoB);
+		rAB.escalar(fator);
+		this.init(pontoA, rAB.getB());
+	}
+
+	@Override
+	public void rotacionar(float angulo) {
+		
+	}
 }

@@ -78,4 +78,22 @@ public class SegmentoDeReta implements FormaMatematica {
         Ponto nB = new Ponto(b.getX() + deltaX, b.getY() + deltaY, ModoCoordenada.ABSOLUTA_JANELA);
         init(nA, nB);
     }
+
+	@Override
+	public void escalar(float fator) {
+		double distancia = b.getX() - a.getX();
+		Ponto nB = new Ponto(a.getX() + distancia*fator, this.getY(a.getX() + distancia*fator), ModoCoordenada.ABSOLUTA_JANELA);
+		init(a, nB);
+	}
+
+	@Override
+	public void rotacionar(float angulo) {
+		Circunferencia c = new Circunferencia(this.getComprimento(), this.a);
+		Ponto p = c.getPontoDaCircunferencia(angulo);
+		init(a, p);
+	}
+	
+	public double getComprimento(){
+		return a.calcularDistancia(b);
+	}
 }

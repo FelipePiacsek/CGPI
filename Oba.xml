@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Figura>
+  <Circulo>
+    <Ponto>
+      <x>0.673</x>
+      <y>0.265</y>
+    </Ponto>
+    <Raio>159.47727110782904</Raio>
+    <Cor>
+      <R>255</R>
+      <G>0</G>
+      <B>0</B>
+    </Cor>
+  </Circulo>
+</Figura>

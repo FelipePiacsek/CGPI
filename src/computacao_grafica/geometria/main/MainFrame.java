@@ -233,17 +233,47 @@ public class MainFrame extends JFrame implements MouseMotionListener, MouseListe
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        if (this.modoAtual == ModoDeAcao.APAGAR && e.getX() > LIMITE_MINIMO_HORIZONTAL) {
-            Ponto2D pontoClicado = new Ponto2D(e.getX(), e.getY(), RED, ABSOLUTA_JANELA);
-            FiguraFinder borracha = new Lupa(pontoClicado);
-            Forma2D formaASerApagada = borracha.encontrar(formas);
-            if (formaASerApagada != null) {
-                this.formas.remove(formaASerApagada);
-                repaint();
-            }
-        } else if (this.modoAtual == ModoDeAcao.APAGAR && e.getX() > LIMITE_MINIMO_HORIZONTAL) {
-            Ponto2D pontoClicado = new Ponto2D(e.getX(), e.getY(), RED, ABSOLUTA_JANELA);
-        }
+    	if(e.getX() > LIMITE_MINIMO_HORIZONTAL){
+	        if (this.modoAtual == ModoDeAcao.APAGAR) {
+	            Ponto2D pontoClicado = new Ponto2D(e.getX(), e.getY(), RED, ABSOLUTA_JANELA);
+	            FiguraFinder borracha = new Lupa(pontoClicado);
+	            Forma2D formaASerApagada = borracha.encontrar(formas);
+	            if (formaASerApagada != null) {
+	                this.formas.remove(formaASerApagada);
+	                repaint();
+	            }
+	        } else if (this.modoAtual == ModoDeAcao.ROTACAO || this.modoAtual == ModoDeAcao.ESCALA) {
+	            Ponto2D pontoClicado = new Ponto2D(e.getX(), e.getY(), RED, ABSOLUTA_JANELA);
+	            FiguraFinder lupa = new Lupa(pontoClicado);
+	            Forma2D forma = lupa.encontrar(formas);
+	            if(forma != null){
+	            	if(this.modoAtual == ModoDeAcao.ESCALA){
+	            		String input = JOptionPane.showInputDialog("Informe o fator de escala: ");
+	            		if(input != null){
+	            			float fator = Float.parseFloat(input);
+	            			if(fator != 0){
+	            				forma.escalar(fator);
+	            			}else if(fator == 0){
+	            				this.formas.remove(forma);
+	            			}
+	            			repaint();
+	            			
+	            		}
+	            	}
+	            	if(this.modoAtual == ModoDeAcao.ROTACAO){
+	            		String input = JOptionPane.showInputDialog("Informe o ângulo da rotação: ");
+	            		if(input != null){
+	            			float angulo = Float.parseFloat(input);
+	            			if(angulo != 0){
+	            				forma.rotacionar(angulo);
+	            			}
+	            			repaint();
+	            			
+	            		}
+	            	}
+	            }
+	        }
+    	}
     }
 
     @Override
@@ -376,7 +406,7 @@ public class MainFrame extends JFrame implements MouseMotionListener, MouseListe
         if (this.modoAtual == ModoDeAcao.POLIGONO && inicioPoligono != null) {
             JOptionPane.showMessageDialog(null, "Finalize o poligono que está sendo desenhado apertando o botão direito.");
         } else {
-            if (this.modoAtual == ModoDeAcao.LINHA_POLIGONAL) {
+            if (this.modoAtual == ModoDeAcao.LINHA_POLIGONAL && inicioPoligono != null) {
                 finalizarPoligono();
             }
             mudarModoDeAcao(e);

@@ -1,6 +1,7 @@
 package computacao_grafica.geometria.formas;
 
 import java.awt.Color;
+
 import computacao_grafica.geometria.matematica.Ponto;
 
 public class Ponto2D extends Ponto {
@@ -12,6 +13,7 @@ public class Ponto2D extends Ponto {
     private Color _corStr;
 
     int larg = 4;
+
 
     public Ponto2D(Ponto p, Color cor, final Ponto.ModoCoordenada modoCoordenada) {
         super(p.getX(), p.getY(), modoCoordenada);

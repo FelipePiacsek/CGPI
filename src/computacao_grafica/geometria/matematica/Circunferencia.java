@@ -2,6 +2,7 @@ package computacao_grafica.geometria.matematica;
 
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
+
 import computacao_grafica.geometria.matematica.Ponto.ModoCoordenada;
 
 public class Circunferencia implements FormaMatematica {
@@ -45,5 +46,16 @@ public class Circunferencia implements FormaMatematica {
         Ponto nCentro = new Ponto(centro.getX() + deltaX, centro.getY() + deltaY, ModoCoordenada.ABSOLUTA_JANELA);
         this.centro = nCentro;
     }
+
+	@Override
+	public void escalar(float fator) {
+		this.raio = this.raio * fator;
+	}
+
+	@Override
+	public void rotacionar(float angulo) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

@@ -122,7 +122,8 @@ public class Ponto implements FormaMatematica {
         this.modoCoordenada = NORMALIZADA;
     }
 
-    public void transladar(int deltaX, int deltaY) {
+    @Override
+	public void transladar(int deltaX, int deltaY) {
         this.x = this.x + deltaX;
         this.y = this.y + deltaY;
     }
@@ -131,5 +132,17 @@ public class Ponto implements FormaMatematica {
     public boolean contem(Ponto ponto) {
         return (int) ponto.getX() == (int) this.x && (int) ponto.getY() == (int) this.y;
     }
+
+	@Override
+	public void escalar(float fator) {
+		this.x = this.x * fator;
+		this.y = this.y * fator;
+	}
+
+	@Override
+	public void rotacionar(float angulo) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

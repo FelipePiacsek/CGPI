@@ -1,6 +1,7 @@
 package computacao_grafica.geometria.formas;
 
 import java.awt.Color;
+
 import computacao_grafica.geometria.io.out.SaveElements;
 import computacao_grafica.geometria.matematica.FormaMatematica;
 import computacao_grafica.geometria.matematica.FormaPoligonal;
@@ -92,5 +93,25 @@ public class FormaPoligonal2D extends Forma2D {
             super.addAllPontos(new SegmentoDeReta2D(s).getPontos());
         }
     }
+
+	@Override
+	public void escalar(float fator) {
+		formaPoligonal.escalar(fator);
+        super.resetPontos();
+        for (SegmentoDeReta s : formaPoligonal.getSegmentos()) {
+            super.addAllPontos(new SegmentoDeReta2D(s).getPontos());
+        }
+	}
+
+	@Override
+	public void rotacionar(float angulo) {
+		
+		formaPoligonal.rotacionar(angulo);
+        super.resetPontos();
+        for (SegmentoDeReta s : formaPoligonal.getSegmentos()) {
+            super.addAllPontos(new SegmentoDeReta2D(s).getPontos());
+        }
+		
+	}
 
 }
