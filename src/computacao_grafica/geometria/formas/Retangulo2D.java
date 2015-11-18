@@ -1,7 +1,6 @@
 package computacao_grafica.geometria.formas;
 
 import java.awt.Color;
-
 import computacao_grafica.geometria.io.out.SaveElements;
 import computacao_grafica.geometria.matematica.FormaMatematica;
 import computacao_grafica.geometria.matematica.Ponto;
@@ -94,18 +93,18 @@ public class Retangulo2D extends Forma2D {
         init();
     }
 
-	@Override
-	public void escalar(float fator) {
-		this.retangulo.escalar(fator);
-        super.resetPontos();
-        init();		
-	}
-
-	@Override
-	public void rotacionar(float angulo) {
-		this.retangulo.rotacionar(angulo);
+    @Override
+    public void escalar(float fator, Ponto ponto) {
+        this.retangulo.escalar(fator, ponto);
         super.resetPontos();
         init();
-		
-	}
+    }
+
+    @Override
+    public void rotacionar(float angulo, Ponto ponto) {
+        this.retangulo.rotacionar(angulo, ponto);
+        super.resetPontos();
+        init();
+
+    }
 }

@@ -79,21 +79,28 @@ public class SegmentoDeReta implements FormaMatematica {
         init(nA, nB);
     }
 
-	@Override
-	public void escalar(float fator) {
-		double distancia = b.getX() - a.getX();
-		Ponto nB = new Ponto(a.getX() + distancia*fator, this.getY(a.getX() + distancia*fator), ModoCoordenada.ABSOLUTA_JANELA);
-		init(a, nB);
-	}
+    @Override
+    public void escalar(float fator, Ponto ponto) {
+        double x1 = ponto.getX();
+        double y1 = ponto.getX();
+        Ponto nA = new Ponto(fator * (a.getX() - x1) + x1, fator * (a.getY() - y1) + y1, ModoCoordenada.ABSOLUTA_JANELA);
+        Ponto nB = new Ponto(fator * (b.getX() - x1) + x1, fator * (b.getY() - y1) + y1, ModoCoordenada.ABSOLUTA_JANELA);
+        init(nA, nB);
+    }
 
-	@Override
-	public void rotacionar(float angulo) {
-		Circunferencia c = new Circunferencia(this.getComprimento(), this.a);
-		Ponto p = c.getPontoDaCircunferencia(angulo);
-		init(a, p);
-	}
-	
-	public double getComprimento(){
-		return a.calcularDistancia(b);
-	}
+    @Override
+    public void rotacionar(float angulo, Ponto ponto) {
+        double x1 = ponto.getX();
+        double y1 = ponto.getX();
+        double rad = (Math.PI * angulo) / 180;
+        Ponto nA = new Ponto(x1 + Math.cos(rad) * (a.getX() - x1) - Math.sin(rad) * (a.getY() - y1), y1 + Math.sin(rad) * (a.getX() - x1) + Math.cos(rad) * (a.getY() - y1),
+                ModoCoordenada.ABSOLUTA_JANELA);
+        Ponto nB = new Ponto(x1 + Math.cos(rad) * (b.getX() - x1) - Math.sin(rad) * (b.getY() - y1), y1 + Math.sin(rad) * (b.getX() - x1) + Math.cos(rad) * (b.getY() - y1),
+                ModoCoordenada.ABSOLUTA_JANELA);
+        init(nA, nB);
+    }
+
+    public double getComprimento() {
+        return a.calcularDistancia(b);
+    }
 }

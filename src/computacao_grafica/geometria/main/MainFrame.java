@@ -6,7 +6,6 @@ import static java.awt.Color.RED;
 import static java.awt.Color.WHITE;
 import static javax.swing.SwingUtilities.isLeftMouseButton;
 import static javax.swing.SwingUtilities.isRightMouseButton;
-
 import java.awt.Color;
 import java.awt.FileDialog;
 import java.awt.Graphics;
@@ -26,11 +25,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-
 import computacao_grafica.geometria.action.FiguraFinder;
 import computacao_grafica.geometria.action.Lupa;
 import computacao_grafica.geometria.arte.EdwardScissorHands;
@@ -44,6 +41,8 @@ import computacao_grafica.geometria.formas.SegmentoDeReta2D;
 import computacao_grafica.geometria.io.DialogUtil;
 import computacao_grafica.geometria.io.in.Parser;
 import computacao_grafica.geometria.io.out.Saver;
+import computacao_grafica.geometria.matematica.Ponto;
+import computacao_grafica.geometria.matematica.Ponto.ModoCoordenada;
 import computacao_grafica.geometria.matematica.SegmentoDeReta;
 
 public class MainFrame extends JFrame implements MouseMotionListener, MouseListener, ActionListener, KeyListener {
@@ -70,9 +69,9 @@ public class MainFrame extends JFrame implements MouseMotionListener, MouseListe
     private JButton botaoModoLinhaPoligonal = new JButton("Linha Poligonal");
 
     private JButton botaoApagarPrimitivo = new JButton("Apagar");
-    
+
     private JButton botaoEscala = new JButton("Escala");
-    
+
     private JButton botaoRotacao = new JButton("Rotação");
 
     private JButton botaoModoTransladar = new JButton("Transladar");
@@ -118,13 +117,6 @@ public class MainFrame extends JFrame implements MouseMotionListener, MouseListe
         setSize(1000, 700);
         this.setResizable(false);
         getContentPane().setLayout(null);
-
-        botaoModoTransladar.setSize(150, 25);
-        botaoModoTransladar.setLocation(20, 0);
-        botaoModoTransladar.addActionListener(this);
-        botaoModoTransladar.addKeyListener(this);
-        getContentPane().add(botaoModoTransladar);
-        mapaAcoes.put(botaoModoTransladar, ModoDeAcao.TRANSLADAR);
 
         botaoModoReta.setSize(150, 25);
         botaoModoReta.setLocation(20, 20);
@@ -174,20 +166,27 @@ public class MainFrame extends JFrame implements MouseMotionListener, MouseListe
         botaoModoLinhaPoligonal.addKeyListener(this);
         getContentPane().add(botaoModoLinhaPoligonal);
         mapaAcoes.put(botaoModoLinhaPoligonal, ModoDeAcao.LINHA_POLIGONAL);
-        
+
         botaoEscala.setSize(150, 25);
         botaoEscala.setLocation(20, 230);
         botaoEscala.addActionListener(this);
         botaoEscala.addKeyListener(this);
         getContentPane().add(botaoEscala);
         mapaAcoes.put(botaoEscala, ModoDeAcao.ESCALA);
-        
+
         botaoRotacao.setSize(150, 25);
         botaoRotacao.setLocation(20, 260);
         botaoRotacao.addActionListener(this);
         botaoRotacao.addKeyListener(this);
         getContentPane().add(botaoRotacao);
         mapaAcoes.put(botaoRotacao, ModoDeAcao.ROTACAO);
+
+        botaoModoTransladar.setSize(150, 25);
+        botaoModoTransladar.setLocation(20, 290);
+        botaoModoTransladar.addActionListener(this);
+        botaoModoTransladar.addKeyListener(this);
+        getContentPane().add(botaoModoTransladar);
+        mapaAcoes.put(botaoModoTransladar, ModoDeAcao.TRANSLADAR);
 
         addKeyListener(this);
         addMouseListener(this);
@@ -233,47 +232,61 @@ public class MainFrame extends JFrame implements MouseMotionListener, MouseListe
 
     @Override
     public void mouseClicked(MouseEvent e) {
-    	if(e.getX() > LIMITE_MINIMO_HORIZONTAL){
-	        if (this.modoAtual == ModoDeAcao.APAGAR) {
-	            Ponto2D pontoClicado = new Ponto2D(e.getX(), e.getY(), RED, ABSOLUTA_JANELA);
-	            FiguraFinder borracha = new Lupa(pontoClicado);
-	            Forma2D formaASerApagada = borracha.encontrar(formas);
-	            if (formaASerApagada != null) {
-	                this.formas.remove(formaASerApagada);
-	                repaint();
-	            }
-	        } else if (this.modoAtual == ModoDeAcao.ROTACAO || this.modoAtual == ModoDeAcao.ESCALA) {
-	            Ponto2D pontoClicado = new Ponto2D(e.getX(), e.getY(), RED, ABSOLUTA_JANELA);
-	            FiguraFinder lupa = new Lupa(pontoClicado);
-	            Forma2D forma = lupa.encontrar(formas);
-	            if(forma != null){
-	            	if(this.modoAtual == ModoDeAcao.ESCALA){
-	            		String input = JOptionPane.showInputDialog("Informe o fator de escala: ");
-	            		if(input != null){
-	            			float fator = Float.parseFloat(input);
-	            			if(fator != 0){
-	            				forma.escalar(fator);
-	            			}else if(fator == 0){
-	            				this.formas.remove(forma);
-	            			}
-	            			repaint();
-	            			
-	            		}
-	            	}
-	            	if(this.modoAtual == ModoDeAcao.ROTACAO){
-	            		String input = JOptionPane.showInputDialog("Informe o ângulo da rotação: ");
-	            		if(input != null){
-	            			float angulo = Float.parseFloat(input);
-	            			if(angulo != 0){
-	            				forma.rotacionar(angulo);
-	            			}
-	            			repaint();
-	            			
-	            		}
-	            	}
-	            }
-	        }
-    	}
+        if (e.getX() > LIMITE_MINIMO_HORIZONTAL) {
+            if (this.modoAtual == ModoDeAcao.APAGAR) {
+                Ponto2D pontoClicado = new Ponto2D(e.getX(), e.getY(), RED, ABSOLUTA_JANELA);
+                FiguraFinder borracha = new Lupa(pontoClicado);
+                Forma2D formaASerApagada = borracha.encontrar(formas);
+                if (formaASerApagada != null) {
+                    this.formas.remove(formaASerApagada);
+                    repaint();
+                }
+            } else if (this.modoAtual == ModoDeAcao.ROTACAO || this.modoAtual == ModoDeAcao.ESCALA) {
+                Ponto2D pontoClicado = new Ponto2D(e.getX(), e.getY(), RED, ABSOLUTA_JANELA);
+                FiguraFinder lupa = new Lupa(pontoClicado);
+                Forma2D forma = lupa.encontrar(formas);
+                if (forma != null) {
+                    if (this.modoAtual == ModoDeAcao.ESCALA) {
+                        String inputEscala = JOptionPane.showInputDialog("Informe o fator de escala: ");
+                        String inputX = JOptionPane.showInputDialog("Informe o x do ponto de referência: ");
+                        String inputY = JOptionPane.showInputDialog("Informe o y do ponto de referência: ");
+                        try {
+                            float fator = Float.parseFloat(inputEscala);
+                            double x = Double.parseDouble(inputX);
+                            double y = Double.parseDouble(inputY);
+                            Ponto ponto = new Ponto(x, y, ModoCoordenada.ABSOLUTA_JANELA);
+                            if (fator != 0) {
+                                forma.escalar(fator, ponto);
+                            } else if (fator == 0) {
+                                this.formas.remove(forma);
+                            }
+                            repaint();
+                        } catch (Exception ex) {
+                            JOptionPane.showMessageDialog(null, "Informe valores válidos.");
+                        }
+
+                    }
+                    if (this.modoAtual == ModoDeAcao.ROTACAO) {
+                        String input = JOptionPane.showInputDialog("Informe o ângulo da rotação: ");
+                        String inputX = JOptionPane.showInputDialog("Informe o x do ponto de referência: ");
+                        String inputY = JOptionPane.showInputDialog("Informe o y do ponto de referência: ");
+                        try {
+                            float angulo = Float.parseFloat(input);
+                            double x = Double.parseDouble(inputX);
+                            double y = Double.parseDouble(inputY);
+                            Ponto ponto = new Ponto(x, y, ModoCoordenada.ABSOLUTA_JANELA);
+                            if (angulo != 0) {
+                                forma.rotacionar(angulo, ponto);
+                            }
+                            repaint();
+                        } catch (Exception ex) {
+                            JOptionPane.showMessageDialog(null, "Informe um valor válido");
+                        }
+                    }
+                }
+            }
+        }
+
     }
 
     @Override
@@ -357,7 +370,8 @@ public class MainFrame extends JFrame implements MouseMotionListener, MouseListe
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        if (pontoA != null && this.modoAtual != ModoDeAcao.POLIGONO && this.modoAtual != ModoDeAcao.ESCALA && this.modoAtual != ModoDeAcao.ROTACAO && this.modoAtual != ModoDeAcao.LINHA_POLIGONAL && e.getX() > LIMITE_MINIMO_HORIZONTAL) {
+        if (pontoA != null && this.modoAtual != ModoDeAcao.POLIGONO && this.modoAtual != ModoDeAcao.ESCALA && this.modoAtual != ModoDeAcao.ROTACAO
+                && this.modoAtual != ModoDeAcao.LINHA_POLIGONAL && e.getX() > LIMITE_MINIMO_HORIZONTAL) {
             pontoB = new Ponto2D(e.getX(), e.getY(), RED, ABSOLUTA_JANELA);
             elastico = getElastico();
             repaint();

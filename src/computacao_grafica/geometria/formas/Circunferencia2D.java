@@ -1,9 +1,7 @@
 package computacao_grafica.geometria.formas;
 
 import static java.awt.Color.RED;
-
 import java.awt.Color;
-
 import computacao_grafica.geometria.io.out.SaveElements;
 import computacao_grafica.geometria.matematica.Circunferencia;
 import computacao_grafica.geometria.matematica.FormaMatematica;
@@ -73,20 +71,20 @@ public class Circunferencia2D extends Forma2D {
         init();
     }
 
-	@Override
-	public void escalar(float fator) {
-		circunferencia.escalar(fator);
-		super.resetPontos();
-		init();
-		
-	}
+    @Override
+    public void escalar(float fator, Ponto ponto) {
+        circunferencia.escalar(fator, ponto);
+        super.resetPontos();
+        init();
 
-	@Override
-	public void rotacionar(float angulo) {
-		circunferencia.rotacionar(angulo);
-		super.resetPontos();
-		init();
-		
-	}
+    }
+
+    @Override
+    public void rotacionar(float angulo, Ponto ponto) {
+        circunferencia.rotacionar(angulo, ponto);
+        super.resetPontos();
+        init();
+
+    }
 
 }

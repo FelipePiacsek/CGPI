@@ -3,9 +3,9 @@ package computacao_grafica.geometria.formas;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-
 import computacao_grafica.geometria.io.out.SaveElements;
 import computacao_grafica.geometria.matematica.FormaMatematica;
+import computacao_grafica.geometria.matematica.Ponto;
 
 public abstract class Forma2D {
 
@@ -28,10 +28,10 @@ public abstract class Forma2D {
     public abstract SaveElements getSaveElements();
 
     public abstract void transladar(int deltaX, int deltaY);
-    
-    public abstract void escalar(float fator);
-    
-    public abstract void rotacionar(float angulo);
+
+    public abstract void escalar(float fator, Ponto ponto);
+
+    public abstract void rotacionar(float angulo, Ponto ponto);
 
     public void resetPontos() {
         pontos = new HashSet<Ponto2D>();

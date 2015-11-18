@@ -1,7 +1,6 @@
 package computacao_grafica.geometria.formas;
 
 import java.awt.Color;
-
 import computacao_grafica.geometria.io.out.SaveElements;
 import computacao_grafica.geometria.matematica.FormaMatematica;
 import computacao_grafica.geometria.matematica.Ponto;
@@ -95,20 +94,20 @@ public class SegmentoDeReta2D extends Forma2D {
         init();
     }
 
-	@Override
-	public void escalar(float fator) {
-		this.segmentoDeReta.escalar(fator);
+    @Override
+    public void escalar(float fator, Ponto ponto) {
+        this.segmentoDeReta.escalar(fator, ponto);
         super.resetPontos();
         init();
-		
-	}
 
-	@Override
-	public void rotacionar(float angulo) {
-		this.segmentoDeReta.rotacionar(angulo);
+    }
+
+    @Override
+    public void rotacionar(float angulo, Ponto ponto) {
+        this.segmentoDeReta.rotacionar(angulo, ponto);
         super.resetPontos();
         init();
-		
-	}
+
+    }
 
 }

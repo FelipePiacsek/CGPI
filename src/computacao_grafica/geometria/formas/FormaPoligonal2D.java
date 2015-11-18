@@ -1,10 +1,10 @@
 package computacao_grafica.geometria.formas;
 
 import java.awt.Color;
-
 import computacao_grafica.geometria.io.out.SaveElements;
 import computacao_grafica.geometria.matematica.FormaMatematica;
 import computacao_grafica.geometria.matematica.FormaPoligonal;
+import computacao_grafica.geometria.matematica.Ponto;
 import computacao_grafica.geometria.matematica.Ponto.ModoCoordenada;
 import computacao_grafica.geometria.matematica.SegmentoDeReta;
 
@@ -94,24 +94,24 @@ public class FormaPoligonal2D extends Forma2D {
         }
     }
 
-	@Override
-	public void escalar(float fator) {
-		formaPoligonal.escalar(fator);
+    @Override
+    public void escalar(float fator, Ponto ponto) {
+        formaPoligonal.escalar(fator, ponto);
         super.resetPontos();
         for (SegmentoDeReta s : formaPoligonal.getSegmentos()) {
             super.addAllPontos(new SegmentoDeReta2D(s).getPontos());
         }
-	}
+    }
 
-	@Override
-	public void rotacionar(float angulo) {
-		
-		formaPoligonal.rotacionar(angulo);
+    @Override
+    public void rotacionar(float angulo, Ponto ponto) {
+
+        formaPoligonal.rotacionar(angulo, ponto);
         super.resetPontos();
         for (SegmentoDeReta s : formaPoligonal.getSegmentos()) {
             super.addAllPontos(new SegmentoDeReta2D(s).getPontos());
         }
-		
-	}
+
+    }
 
 }
