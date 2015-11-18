@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<company>
-	<staff id="1">
-		<firstname>Felipe</firstname>
-		<lastname>Piacsek</lastname>
-		<nickname>Ruivo</nickname>
-		<salary>1500</salary>
-	</staff>
-</company>

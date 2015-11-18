@@ -1,7 +1,6 @@
 package computacao_grafica.geometria.formas;
 
 import java.awt.Color;
-
 import computacao_grafica.geometria.io.out.SaveElements;
 import computacao_grafica.geometria.matematica.FormaMatematica;
 import computacao_grafica.geometria.matematica.Ponto;
@@ -21,9 +20,14 @@ public class Retangulo2D extends Forma2D {
     private SegmentoDeReta2D arestaD;
 
     private SaveElements saveElements;
-    
+
     public Retangulo2D(Retangulo r) {
         this.retangulo = r;
+
+        init();
+    }
+
+    private void init() {
         arestaA = new SegmentoDeReta2D(this.retangulo.getArestaA());
         arestaB = new SegmentoDeReta2D(this.retangulo.getArestaB());
         arestaC = new SegmentoDeReta2D(this.retangulo.getArestaC());
@@ -34,12 +38,7 @@ public class Retangulo2D extends Forma2D {
 
     public Retangulo2D(Ponto a, Ponto b) {
         this.retangulo = new Retangulo(a, b);
-        arestaA = new SegmentoDeReta2D(this.retangulo.getArestaA());
-        arestaB = new SegmentoDeReta2D(this.retangulo.getArestaB());
-        arestaC = new SegmentoDeReta2D(this.retangulo.getArestaC());
-        arestaD = new SegmentoDeReta2D(this.retangulo.getArestaD());
-        adicionarPontos();
-        setSaveElements();
+        init();
     }
 
     private void adicionarPontos() {
@@ -66,23 +65,31 @@ public class Retangulo2D extends Forma2D {
         return this.retangulo;
     }
 
-    public Retangulo getRetangulo(){
-    	return this.retangulo;
+    public Retangulo getRetangulo() {
+        return this.retangulo;
     }
 
-    private void setSaveElements(){
-    	this.saveElements = new SaveElements();
-    	this.saveElements.setCor(super.getPontos().stream().findFirst().get().get_cor());
-    	Ponto2D a = new Ponto2D(retangulo.getPontoA(), Color.RED, ModoCoordenada.ABSOLUTA_JANELA);
-    	Ponto2D b = new Ponto2D(retangulo.getPontoB(), Color.RED, ModoCoordenada.ABSOLUTA_JANELA);
-    	a.setModoCoordenada(ModoCoordenada.NORMALIZADA);
-    	b.setModoCoordenada(ModoCoordenada.NORMALIZADA);
-    	this.saveElements.addPonto(a);
-    	this.saveElements.addPonto(b);
-    	this.saveElements.setNome("Retangulo");
+    private void setSaveElements() {
+        this.saveElements = new SaveElements();
+        this.saveElements.setCor(super.getPontos().stream().findFirst().get().get_cor());
+        Ponto2D a = new Ponto2D(retangulo.getPontoA(), Color.RED, ModoCoordenada.ABSOLUTA_JANELA);
+        Ponto2D b = new Ponto2D(retangulo.getPontoB(), Color.RED, ModoCoordenada.ABSOLUTA_JANELA);
+        a.setModoCoordenada(ModoCoordenada.NORMALIZADA);
+        b.setModoCoordenada(ModoCoordenada.NORMALIZADA);
+        this.saveElements.addPonto(a);
+        this.saveElements.addPonto(b);
+        this.saveElements.setNome("Retangulo");
     }
-	@Override
-	public SaveElements getSaveElements() {
-		return this.saveElements;
-	}
+
+    @Override
+    public SaveElements getSaveElements() {
+        return this.saveElements;
+    }
+
+    @Override
+    public void transladar(int deltaX, int deltaY) {
+        this.retangulo.transladar(deltaX, deltaY);
+        super.resetPontos();
+        init();
+    }
 }

@@ -8,6 +8,7 @@ import static javax.swing.SwingUtilities.isLeftMouseButton;
 import static javax.swing.SwingUtilities.isRightMouseButton;
 
 import java.awt.Color;
+import java.awt.FileDialog;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -30,7 +31,8 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import computacao_grafica.geometria.action.Borracha;
+import computacao_grafica.geometria.action.FiguraFinder;
+import computacao_grafica.geometria.action.Lupa;
 import computacao_grafica.geometria.arte.EdwardScissorHands;
 import computacao_grafica.geometria.arte.PaulSignac;
 import computacao_grafica.geometria.formas.Circunferencia2D;
@@ -39,6 +41,7 @@ import computacao_grafica.geometria.formas.FormaPoligonal2D;
 import computacao_grafica.geometria.formas.Ponto2D;
 import computacao_grafica.geometria.formas.Retangulo2D;
 import computacao_grafica.geometria.formas.SegmentoDeReta2D;
+import computacao_grafica.geometria.io.DialogUtil;
 import computacao_grafica.geometria.io.in.Parser;
 import computacao_grafica.geometria.io.out.Saver;
 import computacao_grafica.geometria.matematica.SegmentoDeReta;
@@ -46,7 +49,7 @@ import computacao_grafica.geometria.matematica.SegmentoDeReta;
 public class MainFrame extends JFrame implements MouseMotionListener, MouseListener, ActionListener, KeyListener {
 
     private enum ModoDeAcao {
-        RETA, CIRCUNFERENCIA, RETANGULO, RECORTE, POLIGONO, LINHA_POLIGONAL, APAGAR, ROTACAO, ESCALA;
+        RETA, CIRCUNFERENCIA, RETANGULO, RECORTE, POLIGONO, LINHA_POLIGONAL, APAGAR, TRANSLADAR, ROTACAO, ESCALA;
     }
 
     /**
@@ -72,6 +75,8 @@ public class MainFrame extends JFrame implements MouseMotionListener, MouseListe
     
     private JButton botaoRotacao = new JButton("Rotação");
 
+    private JButton botaoModoTransladar = new JButton("Transladar");
+
     private Ponto2D pontoA, pontoB, inicioPoligono, previousPontoPoligono, nextPontoPoligono;
 
     private Forma2D elastico;
@@ -94,6 +99,10 @@ public class MainFrame extends JFrame implements MouseMotionListener, MouseListe
 
     private Map<JButton, ModoDeAcao> mapaAcoes = new HashMap<JButton, ModoDeAcao>();
 
+    private Integer xInicial, xFinal, yInicial, yFinal;
+
+    private Forma2D figuraSelecionada;
+
     public static void main(String[] args) {
         /**
          * Definicoes de janela
@@ -103,11 +112,19 @@ public class MainFrame extends JFrame implements MouseMotionListener, MouseListe
     }
 
     public MainFrame() {
-
+        yInicial = yFinal = xInicial = xFinal = null;
+        figuraSelecionada = null;
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1000, 700);
         this.setResizable(false);
         getContentPane().setLayout(null);
+
+        botaoModoTransladar.setSize(150, 25);
+        botaoModoTransladar.setLocation(20, 0);
+        botaoModoTransladar.addActionListener(this);
+        botaoModoTransladar.addKeyListener(this);
+        getContentPane().add(botaoModoTransladar);
+        mapaAcoes.put(botaoModoTransladar, ModoDeAcao.TRANSLADAR);
 
         botaoModoReta.setSize(150, 25);
         botaoModoReta.setLocation(20, 20);
@@ -218,8 +235,8 @@ public class MainFrame extends JFrame implements MouseMotionListener, MouseListe
     public void mouseClicked(MouseEvent e) {
         if (this.modoAtual == ModoDeAcao.APAGAR && e.getX() > LIMITE_MINIMO_HORIZONTAL) {
             Ponto2D pontoClicado = new Ponto2D(e.getX(), e.getY(), RED, ABSOLUTA_JANELA);
-            Borracha borracha = new Borracha(pontoClicado);
-            Forma2D formaASerApagada = borracha.apagar(formas);
+            FiguraFinder borracha = new Lupa(pontoClicado);
+            Forma2D formaASerApagada = borracha.encontrar(formas);
             if (formaASerApagada != null) {
                 this.formas.remove(formaASerApagada);
                 repaint();
@@ -254,8 +271,14 @@ public class MainFrame extends JFrame implements MouseMotionListener, MouseListe
                     previousPontoPoligono = new Ponto2D(nextPontoPoligono, nextPontoPoligono.get_cor(), nextPontoPoligono.getModoCoordenada());
                     repaint();
                 }
-            } else if (this.modoAtual != ModoDeAcao.APAGAR) {
+            } else if (this.modoAtual != ModoDeAcao.APAGAR && this.modoAtual != ModoDeAcao.TRANSLADAR) {
                 pontoA = new Ponto2D(e.getX(), e.getY(), RED, ABSOLUTA_JANELA);
+            } else if (this.modoAtual == ModoDeAcao.TRANSLADAR && e.getX() > LIMITE_MINIMO_HORIZONTAL) {
+                Ponto2D pontoClicado = new Ponto2D(e.getX(), e.getY(), RED, ABSOLUTA_JANELA);
+                xInicial = e.getX();
+                yInicial = e.getY();
+                FiguraFinder lupa = new Lupa(pontoClicado);
+                this.figuraSelecionada = lupa.encontrar(formas);
             }
         }
         if (isRightMouseButton(e) && e.getX() > LIMITE_MINIMO_HORIZONTAL) {
@@ -283,7 +306,8 @@ public class MainFrame extends JFrame implements MouseMotionListener, MouseListe
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        if (this.modoAtual != ModoDeAcao.POLIGONO && this.modoAtual != ModoDeAcao.LINHA_POLIGONAL && pontoA != null && pontoB != null && e.getX() > LIMITE_MINIMO_HORIZONTAL) {
+        if (this.modoAtual != ModoDeAcao.TRANSLADAR && this.modoAtual != ModoDeAcao.POLIGONO && this.modoAtual != ModoDeAcao.LINHA_POLIGONAL && pontoA != null && pontoB != null
+                && e.getX() > LIMITE_MINIMO_HORIZONTAL) {
             elastico = getElastico();
             if (this.modoAtual != ModoDeAcao.RECORTE) {
                 formas.add(elastico);
@@ -295,6 +319,10 @@ public class MainFrame extends JFrame implements MouseMotionListener, MouseListe
             repaint();
             pontoA = pontoB = null;
         }
+        if (this.modoAtual == ModoDeAcao.TRANSLADAR) {
+            yInicial = yFinal = xInicial = xFinal = null;
+            figuraSelecionada = null;
+        }
     }
 
     @Override
@@ -302,6 +330,16 @@ public class MainFrame extends JFrame implements MouseMotionListener, MouseListe
         if (pontoA != null && this.modoAtual != ModoDeAcao.POLIGONO && this.modoAtual != ModoDeAcao.ESCALA && this.modoAtual != ModoDeAcao.ROTACAO && this.modoAtual != ModoDeAcao.LINHA_POLIGONAL && e.getX() > LIMITE_MINIMO_HORIZONTAL) {
             pontoB = new Ponto2D(e.getX(), e.getY(), RED, ABSOLUTA_JANELA);
             elastico = getElastico();
+            repaint();
+        }
+        if (figuraSelecionada != null && xInicial != null && yInicial != null && this.modoAtual == ModoDeAcao.TRANSLADAR) {
+            xFinal = e.getX();
+            yFinal = e.getY();
+            int deltaX = (xInicial - xFinal) * -1;
+            int deltaY = (yInicial - yFinal) * -1;
+            xInicial = xFinal;
+            yInicial = yFinal;
+            figuraSelecionada.transladar(deltaX, deltaY);
             repaint();
         }
     }
@@ -354,43 +392,52 @@ public class MainFrame extends JFrame implements MouseMotionListener, MouseListe
     }
 
     private Set<Integer> keys = new HashSet<Integer>();
-    
-	@Override
-	public void keyPressed(KeyEvent k) {
-		if(k.getKeyCode() == KeyEvent.VK_CONTROL){
-			keys.add(KeyEvent.VK_CONTROL);
-		}
-		if(k.getKeyCode() == KeyEvent.VK_S){
-			if(keys.contains(KeyEvent.VK_CONTROL)){
-				Saver vagnerLove = new Saver();
-				vagnerLove.salva(formas);
-			}
-		}
-		if(k.getKeyCode() == KeyEvent.VK_O){
-			if(keys.contains(KeyEvent.VK_CONTROL)){
-				Parser renatoAugusto = new Parser();
-				this.formas = renatoAugusto.ler("Teste1.xml");
-				repaint();
-			}
-		}
-		if(k.getKeyCode() == KeyEvent.VK_DELETE){
-			if(keys.contains(KeyEvent.VK_CONTROL)){
-				this.formas = new ArrayList<Forma2D>();
-				repaint();
-			}
-		}
-	}
 
-	@Override
-	public void keyReleased(KeyEvent k) {
-		if(k.getKeyCode() == KeyEvent.VK_CONTROL || k.getKeyCode() == KeyEvent.VK_S || k.getKeyCode() == KeyEvent.VK_O){
-			keys = new HashSet<Integer>();
-		}
-	}
+    @Override
+    public void keyPressed(KeyEvent k) {
+        if (k.getKeyCode() == KeyEvent.VK_CONTROL) {
+            keys.add(KeyEvent.VK_CONTROL);
+        }
+        if (k.getKeyCode() == KeyEvent.VK_S) {
+            if (keys.contains(KeyEvent.VK_CONTROL)) {
+                DialogUtil dialog = new DialogUtil(this, FileDialog.SAVE);
+                String filename = dialog.getFilePath();
+                if (filename != null) {
+                    Saver vagnerLove = new Saver();
+                    vagnerLove.salva(formas, filename);
 
-	@Override
-	public void keyTyped(KeyEvent k) {
-		
-	}
+                }
+            }
+        }
+        if (k.getKeyCode() == KeyEvent.VK_O) {
+            if (keys.contains(KeyEvent.VK_CONTROL)) {
+                DialogUtil dialog = new DialogUtil(this, FileDialog.LOAD);
+                String filename = dialog.getFilePath();
+                if (filename != null) {
+                    Parser renatoAugusto = new Parser();
+                    this.formas = renatoAugusto.ler(filename);
+                    repaint();
+                }
+            }
+        }
+        if (k.getKeyCode() == KeyEvent.VK_DELETE) {
+            if (keys.contains(KeyEvent.VK_CONTROL)) {
+                this.formas = new ArrayList<Forma2D>();
+                repaint();
+            }
+        }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent k) {
+        if (k.getKeyCode() == KeyEvent.VK_CONTROL || k.getKeyCode() == KeyEvent.VK_S || k.getKeyCode() == KeyEvent.VK_O) {
+            keys = new HashSet<Integer>();
+        }
+    }
+
+    @Override
+    public void keyTyped(KeyEvent k) {
+
+    }
 
 }

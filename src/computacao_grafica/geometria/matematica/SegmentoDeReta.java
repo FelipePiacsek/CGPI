@@ -1,5 +1,7 @@
 package computacao_grafica.geometria.matematica;
 
+import computacao_grafica.geometria.matematica.Ponto.ModoCoordenada;
+
 public class SegmentoDeReta implements FormaMatematica {
 
     private Ponto a;
@@ -10,11 +12,15 @@ public class SegmentoDeReta implements FormaMatematica {
 
     private double coeficienteAngular;
 
-    public SegmentoDeReta(Ponto a, Ponto b) {
+    private void init(Ponto a, Ponto b) {
         this.a = a;
         this.b = b;
         this.coeficienteAngular = (a.getY() - b.getY()) / (a.getX() - b.getX());
         this.coeficienteLinear = a.getY() - this.coeficienteAngular * a.getX();
+    }
+
+    public SegmentoDeReta(Ponto a, Ponto b) {
+        init(a, b);
     }
 
     public Ponto getA() {
@@ -64,5 +70,12 @@ public class SegmentoDeReta implements FormaMatematica {
         } else {
             return (int) this.getY(ponto.getX()) == (int) ponto.getY();
         }
+    }
+
+    @Override
+    public void transladar(int deltaX, int deltaY) {
+        Ponto nA = new Ponto(a.getX() + deltaX, a.getY() + deltaY, ModoCoordenada.ABSOLUTA_JANELA);
+        Ponto nB = new Ponto(b.getX() + deltaX, b.getY() + deltaY, ModoCoordenada.ABSOLUTA_JANELA);
+        init(nA, nB);
     }
 }

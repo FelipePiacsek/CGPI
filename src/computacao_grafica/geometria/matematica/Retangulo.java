@@ -23,6 +23,10 @@ public class Retangulo implements FormaMatematica {
     private double largura;
 
     public Retangulo(Ponto a, Ponto b) {
+        init(a, b);
+    }
+
+    private void init(Ponto a, Ponto b) {
         if (!a.getModoCoordenada().equals(b.getModoCoordenada())) {
             throw new IllegalArgumentException();
         }
@@ -100,5 +104,17 @@ public class Retangulo implements FormaMatematica {
     @Override
     public boolean contem(Ponto ponto) {
         return arestaA.contem(ponto) || arestaB.contem(ponto) || arestaC.contem(ponto) || arestaD.contem(ponto);
+    }
+
+    @Override
+    public void transladar(int deltaX, int deltaY) {
+        this.arestaA.transladar(deltaX, deltaY);
+        this.arestaB.transladar(deltaX, deltaY);
+        this.arestaC.transladar(deltaX, deltaY);
+        this.arestaD.transladar(deltaX, deltaY);
+        pontoA.transladar(deltaX, deltaY);
+        pontoB.transladar(deltaX, deltaY);
+        pontoC.transladar(deltaX, deltaY);
+        pontoD.transladar(deltaX, deltaY);
     }
 }
